@@ -44,9 +44,9 @@ val FILM_STOCKS = listOf(
     FilmStock("Kodak Ektachrome 100",    "kodak_ektachrome_100.json",    "kodak_endura_premier.json"),
     FilmStock("Kodak Kodachrome 64",     "kodak_kodachrome_64.json",     "kodak_endura_premier.json"),
     // ── Cine ──────────────────────────────────────────────────────────────
+    // Cinestill = Vision3 with remjet removed for C-41 processing; same spectral profile
     FilmStock("Cinestill 50D",           "kodak_vision3_50d.json",       "kodak_2383.json"),
     FilmStock("Cinestill 800T",          "kodak_vision3_500t.json",      "kodak_2383.json"),
-    FilmStock("Kodak Vision3 50D",       "kodak_vision3_50d.json",       "kodak_2383.json"),
     FilmStock("Kodak Vision3 200T",      "kodak_vision3_200t.json",      "kodak_2383.json"),
     FilmStock("Kodak Vision3 250D",      "kodak_vision3_250d.json",      "kodak_2383.json"),
     FilmStock("Kodak Vision3 500T",      "kodak_vision3_500t.json",      "kodak_2383.json"),

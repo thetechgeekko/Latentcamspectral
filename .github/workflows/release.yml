@@ -138,21 +138,22 @@ jobs:
               -Pandroid.injected.signing.key.password="$KEY_PASSWORD" \
               --no-daemon
             echo "APK_PATH=android-app/app/build/outputs/apk/release/app-release.apk" >> $GITHUB_ENV
-            echo "APK_NAME=LatentCam-${{ github.ref_name }}.apk" >> $GITHUB_ENV
+            echo "APK_NAME=LatentCam-${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}.apk" >> $GITHUB_ENV
           else
             # No keystore configured — build debug-signed APK (can still sideload)
             ./gradlew assembleDebug --no-daemon
             echo "APK_PATH=android-app/app/build/outputs/apk/debug/app-debug.apk" >> $GITHUB_ENV
-            echo "APK_NAME=LatentCam-${{ github.ref_name }}-debug.apk" >> $GITHUB_ENV
+            echo "APK_NAME=LatentCam-${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}-debug.apk" >> $GITHUB_ENV
           fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name || inputs.tag }}
-          name: LatentCam ${{ github.ref_name || inputs.tag }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}
+          name: LatentCam ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}
           draft: false
-          prerelease: ${{ contains(github.ref_name, '-') }}
+          prerelease: ${{ (github.ref_type == 'tag' && contains(github.ref_name, '-')) || contains(inputs.tag, '-') }}
           generate_release_notes: true
           body: |
             ## Install
