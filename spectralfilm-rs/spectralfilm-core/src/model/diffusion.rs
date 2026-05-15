@@ -206,6 +206,7 @@ struct DiffusionFamilyCfg {
 }
 
 #[derive(Debug, Clone, Copy)]
+#[allow(dead_code)]
 struct ResolvedDiffusionFamilyCfg {
     core: DiffusionGroupCfg,
     halo: DiffusionGroupCfg,
@@ -427,6 +428,7 @@ fn exp_radial_sum(radius: &[f64], lambdas: &[f64], weights: &[f64]) -> Vec<f64> 
     total
 }
 
+#[allow(dead_code)]
 fn bloom_max_lambda_um(family: &str, params: Option<&DiffusionFilterParams>) -> f64 {
     let cfg = resolve_family_cfg(family, params);
     cfg.bloom.lambda_um * cfg.bloom.spread
@@ -615,6 +617,7 @@ pub fn apply_diffusion_filter_um(
 
 /// Returns (core_um, halo_um, bloom_um) central PSF widths for a diffusion
 /// filter family. Kept for compatibility with older Rust callers.
+#[allow(dead_code)]
 fn family_psf_um(family: &str, scale: f64) -> (f64, f64, f64) {
     let cfg = resolve_family_cfg(family, None);
     (cfg.core.lambda_um * scale, cfg.halo.lambda_um * scale, cfg.bloom.lambda_um * scale)

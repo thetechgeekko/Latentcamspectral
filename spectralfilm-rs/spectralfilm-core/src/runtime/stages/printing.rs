@@ -38,7 +38,7 @@ impl PrintingStage {
     }
 
     pub fn expose(&self, cmy_film: &[f64], width: usize, height: usize, pixel_size_um: f64, lut_service: &mut SpectralLUTService, enlarger_service: &EnlargerService, color_reference: &mut ColorReferenceService) -> (Vec<f64>, Vec<f64>, Vec<f64>) {
-        let n_px = width * height;
+        let _n_px = width * height;
         let n_wl = self.film.data.n_wl().min(N_WL);
         let print_light = enlarger_service.filtered_illuminant();
         

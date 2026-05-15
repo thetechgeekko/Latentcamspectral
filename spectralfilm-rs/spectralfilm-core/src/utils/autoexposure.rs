@@ -2,7 +2,6 @@
 //!
 //! Mirrors `spektrafilm/utils/autoexposure.py`.
 
-use crate::config::CMFS;
 
 /// Measure the auto-exposure correction in EV needed to bring the image
 /// luminance to 18% grey.

@@ -13,6 +13,7 @@ use crate::utils::conversions::{density_to_light, light_to_xyz, srgb_gamma_encod
 #[derive(Debug, Clone)]
 pub struct ScanningStage {
     film: Profile,
+    #[allow(dead_code)]
     film_render: FilmRenderingParams,
     print: Profile,
     print_render: PrintRenderingParams,

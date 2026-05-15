@@ -27,9 +27,6 @@ pub fn fast_binomial_scalar(n: i64, p: f64, rng: &mut impl Rng) -> i64 {
         } else {
             let u: f64 = rng.gen();
             let mut cdf = 0.0;
-            let mut prob = (1.0 - p).powi(n as i32); // Note: fails if n >= 2^31, but n < 25 is handled, and n > 25 but var <= 10 means p is tiny, n is still likely small.
-            // Wait, powi takes i32. If n is large, this could overflow. But var <= 10, mean can be 1000, n can be 1000000.
-            // Let's use powf just to be safe.
             let mut prob_f = (1.0 - p).powf(n as f64);
             let mut k = 0;
             while cdf < u && k <= n {
