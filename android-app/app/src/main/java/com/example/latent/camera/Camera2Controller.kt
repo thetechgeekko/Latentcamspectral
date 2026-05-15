@@ -364,7 +364,10 @@ class Camera2Controller(private val context: Context) {
 
     private fun startPreview(session: CameraCaptureSession, previewSurface: Surface) {
         try {
-            val previewRequest = session.device.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+            // Use the field rather than session.device so we bail cleanly if
+            // closeCamera() ran concurrently and nulled cameraDevice out.
+            val device = cameraDevice ?: return
+            val previewRequest = device.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
             previewRequest.addTarget(previewSurface)
             previewRequest.set(
                 CaptureRequest.CONTROL_AF_MODE,
@@ -373,6 +376,9 @@ class Camera2Controller(private val context: Context) {
             session.setRepeatingRequest(previewRequest.build(), null, backgroundHandler)
         } catch (e: CameraAccessException) {
             Log.e(TAG, "Failed to start preview", e)
+        } catch (e: IllegalStateException) {
+            // Camera was closed between onConfigured and createCaptureRequest — safe to ignore.
+            Log.w(TAG, "Camera closed before preview started", e)
         }
     }
 
@@ -424,6 +430,8 @@ class Camera2Controller(private val context: Context) {
             }, backgroundHandler)
         } catch (e: CameraAccessException) {
             captureCallback?.onCaptureFailed("CameraAccessException: ${e.message}")
+        } catch (e: IllegalStateException) {
+            captureCallback?.onCaptureFailed("Camera closed during capture: ${e.message}")
         }
     }
 

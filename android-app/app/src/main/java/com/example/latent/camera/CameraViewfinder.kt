@@ -168,10 +168,17 @@ fun CameraViewfinder(
 
                                 // 3. Start Render Loop
                                 camST.setOnFrameAvailableListener {
-                                    core.makeCurrent(windowSurface)
-                                    it.updateTexImage()
-                                    r.draw(it)
-                                    core.swapBuffers(windowSurface)
+                                    try {
+                                        core.makeCurrent(windowSurface)
+                                        it.updateTexImage()
+                                        r.draw(it)
+                                        core.swapBuffers(windowSurface)
+                                    } catch (e: Exception) {
+                                        // "EglImage dataspace changed" or other driver-level
+                                        // errors surface here; log and skip this frame rather
+                                        // than crashing — the next frame will recover.
+                                        Log.w("CameraViewfinder", "Frame dropped: ${e.message}")
+                                    }
                                 }
 
                                 // 4. Open Camera — use actual TextureView pixel dimensions
