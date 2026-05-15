@@ -6,6 +6,8 @@ import android.graphics.SurfaceTexture
 import android.opengl.EGL14
 import android.util.Log
 import android.view.Surface
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import android.view.TextureView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -75,6 +77,22 @@ fun CameraViewfinder(
     LaunchedEffect(currentLut, renderer) {
         if (currentLut != null && renderer != null) {
             renderer?.updateLut(currentLut, 33)
+        }
+    }
+
+    // Re-open camera when the user switches lenses.
+    // Skips on first composition (cameraSurfaceTexture is null; initial open is handled
+    // inside onSurfaceTextureAvailable). Only acts once the surface is ready.
+    LaunchedEffect(selectedLens) {
+        val st = cameraSurfaceTexture ?: return@LaunchedEffect
+        val lens = selectedLens ?: return@LaunchedEffect
+        withContext(Dispatchers.IO) {
+            controller.closeCamera()
+            controller.stopBackgroundThread()
+            controller.startBackgroundThread()
+            val previewSize = controller.getPreviewSize(lens.cameraId, 1920, 1080)
+            st.setDefaultBufferSize(previewSize.width, previewSize.height)
+            controller.openCamera(lens, Surface(st))
         }
     }
 
