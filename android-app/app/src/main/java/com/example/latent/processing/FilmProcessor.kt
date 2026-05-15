@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CaptureResult
+import android.hardware.camera2.TotalCaptureResult
 import android.media.Image
 import android.provider.MediaStore
 import android.util.Log
@@ -76,27 +77,32 @@ class FilmProcessor(private val context: Context) {
         }
     }
 
-    suspend fun processRaw(
-        rawImage: Image,
-        result: CaptureResult,
-        chars: CameraCharacteristics,
-        filmStockIndex: Int
+    /**
+     * Process a [RawJob] produced by [com.example.latent.camera.Camera2Controller].
+     * [onProgress] is called with values in [0, 1] as processing advances through stages.
+     */
+    suspend fun processRawJob(
+        job: RawJob,
+        onProgress: (Float) -> Unit = {},
     ): String? = withContext(Dispatchers.Default) {
-        loadFilmStock(filmStockIndex)
+        onProgress(0.02f)
+        loadFilmStock(job.filmStockIndex)
         val engine = currentEngine ?: return@withContext null
 
-        val width = rawImage.width
-        val height = rawImage.height
-        
-        Log.i(TAG, "Starting Full-Res Spectral Development (${width}x${height})")
+        Log.i(TAG, "Starting Full-Res Spectral Development (${job.width}x${job.height})")
 
-        // ── Step 1: Full-Resolution Bilinear Demosaic & Linearization ──────
-        val linearRgb = bayerToFullResLinearRgb(rawImage, result, chars)
+        // ── Step 1: Bilinear Demosaic & Linearization (5 % → 30 %) ─────────
+        onProgress(0.05f)
+        val linearRgb = bayerToFullResLinearRgb(job.pixels, job.width, job.height, job.result, job.characteristics) { rowFrac ->
+            onProgress(0.05f + rowFrac * 0.25f)
+        }
 
-        // ── Step 2: Rust Spectral Engine ───────────────────────────────────
-        val processed = engine.process(linearRgb, width, height)
+        // ── Step 2: Rust Spectral Engine (30 % → 85 %) ──────────────────────
+        onProgress(0.30f)
+        val processed = engine.process(linearRgb, job.width, job.height)
 
-        // ── Step 3: Floats to Bitmap ───────────────────────────────────────
+        // ── Step 3: Floats to Bitmap (85 % → 95 %) ──────────────────────────
+        onProgress(0.85f)
         val outPixels = IntArray(processed.width * processed.height)
         for (i in outPixels.indices) {
             val r = linearToSrgb(processed.data[i * 3 + 0])
@@ -104,85 +110,97 @@ class FilmProcessor(private val context: Context) {
             val b = linearToSrgb(processed.data[i * 3 + 2])
             outPixels[i] = (0xFF shl 24) or (r shl 16) or (g shl 8) or b
         }
+        val bitmap = Bitmap.createBitmap(processed.width, processed.height, Bitmap.Config.ARGB_8888)
+        bitmap.setPixels(outPixels, 0, processed.width, 0, 0, processed.width, processed.height)
 
-        val outputBitmap = Bitmap.createBitmap(processed.width, processed.height, Bitmap.Config.ARGB_8888)
-        outputBitmap.setPixels(outPixels, 0, processed.width, 0, 0, processed.width, processed.height)
-
-        // ── Step 4: Save & Inject Metadata ──────────────────────────────────
-        val stock = FILM_STOCKS[filmStockIndex]
+        // ── Step 4: Save & Inject Metadata (95 % → 100 %) ──────────────────
+        onProgress(0.95f)
+        val stock = FILM_STOCKS[job.filmStockIndex]
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
         val filename = "LATENT_${stock.displayName.replace(" ", "_")}_${timestamp}.jpg"
-        
-        val uri = saveWithMetadata(outputBitmap, filename, stock, result, chars)
-        outputBitmap.recycle()
-        return@withContext uri
+        val uri = saveWithMetadata(bitmap, filename, stock, job.result, job.characteristics)
+        bitmap.recycle()
+
+        onProgress(1.0f)
+        uri
     }
 
-    /**
-     * Professional-grade Bilinear Demosaic.
-     * Preserves full sensor resolution (12MP+) while linearized.
-     */
-    private fun bayerToFullResLinearRgb(image: Image, result: CaptureResult, chars: CameraCharacteristics): FloatArray {
-        val plane = image.planes[0]
-        val buffer = plane.buffer.asShortBuffer()
-        val width = image.width
-        val height = image.height
-        
+    suspend fun processRaw(
+        rawImage: Image,
+        result: CaptureResult,
+        chars: CameraCharacteristics,
+        filmStockIndex: Int
+    ): String? {
+        val plane = rawImage.planes[0]
+        val shortBuf = plane.buffer.asShortBuffer()
+        val pixels = ShortArray(shortBuf.remaining())
+        shortBuf.get(pixels)
+        val job = RawJob(pixels, rawImage.width, rawImage.height,
+            result as TotalCaptureResult, chars, filmStockIndex)
+        return processRawJob(job)
+    }
+
+    private fun bayerToFullResLinearRgb(
+        pixels: ShortArray,
+        width: Int,
+        height: Int,
+        result: CaptureResult,
+        chars: CameraCharacteristics,
+        rowProgress: ((Float) -> Unit)? = null,
+    ): FloatArray {
         val blackLevel = chars.get(CameraCharacteristics.SENSOR_BLACK_LEVEL_PATTERN)
         val whiteLevel = chars.get(CameraCharacteristics.SENSOR_INFO_WHITE_LEVEL) ?: 1023
-        
+
         val output = FloatArray(width * height * 3)
 
-        // Bilinear demosaic for full resolution
         for (y in 1 until height - 1) {
+            if (rowProgress != null && y % 100 == 0) rowProgress(y.toFloat() / height)
             for (x in 1 until width - 1) {
                 val idx = y * width + x
-                val p = buffer.get(idx).toInt() and 0xFFFF
-                
-                // Very simplified bilinear based on RGGB pattern
-                // In a real pro app, we'd check the SENSOR_INFO_COLOR_FILTER_ARRANGEMENT
+                val p = pixels[idx].toInt() and 0xFFFF
+
                 val r: Float
                 val g: Float
                 val b: Float
 
-                if (y % 2 == 0) { // Row 0, 2, ...
+                if (y % 2 == 0) {
                     if (x % 2 == 0) { // Red pixel
                         r = normalize(p, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel)
-                        g = (normalize(buffer.get(idx-1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 0) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx+1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 0) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx-width).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 1) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx+width).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 1) ?: 0, whiteLevel)) / 4f
-                        b = (normalize(buffer.get(idx-width-1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx-width+1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx+width-1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx+width+1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel)) / 4f
-                    } else { // Green pixel (Row 0)
+                        g = (normalize(pixels[idx-1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 0) ?: 0, whiteLevel) +
+                             normalize(pixels[idx+1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 0) ?: 0, whiteLevel) +
+                             normalize(pixels[idx-width].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 1) ?: 0, whiteLevel) +
+                             normalize(pixels[idx+width].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 1) ?: 0, whiteLevel)) / 4f
+                        b = (normalize(pixels[idx-width-1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel) +
+                             normalize(pixels[idx-width+1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel) +
+                             normalize(pixels[idx+width-1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel) +
+                             normalize(pixels[idx+width+1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel)) / 4f
+                    } else { // Green pixel (row 0)
                         g = normalize(p, blackLevel?.getOffsetForIndex(1, 0) ?: 0, whiteLevel)
-                        r = (normalize(buffer.get(idx-1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx+1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel)) / 2f
-                        b = (normalize(buffer.get(idx-width).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx+width).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel)) / 2f
+                        r = (normalize(pixels[idx-1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel) +
+                             normalize(pixels[idx+1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel)) / 2f
+                        b = (normalize(pixels[idx-width].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel) +
+                             normalize(pixels[idx+width].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel)) / 2f
                     }
-                } else { // Row 1, 3, ...
-                    if (x % 2 == 0) { // Green pixel (Row 1)
+                } else {
+                    if (x % 2 == 0) { // Green pixel (row 1)
                         g = normalize(p, blackLevel?.getOffsetForIndex(0, 1) ?: 0, whiteLevel)
-                        r = (normalize(buffer.get(idx-width).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx+width).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel)) / 2f
-                        b = (normalize(buffer.get(idx-1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx+1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel)) / 2f
+                        r = (normalize(pixels[idx-width].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel) +
+                             normalize(pixels[idx+width].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel)) / 2f
+                        b = (normalize(pixels[idx-1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel) +
+                             normalize(pixels[idx+1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel)) / 2f
                     } else { // Blue pixel
                         b = normalize(p, blackLevel?.getOffsetForIndex(1, 1) ?: 0, whiteLevel)
-                        g = (normalize(buffer.get(idx-1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 1) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx+1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 1) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx-width).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 0) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx+width).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 0) ?: 0, whiteLevel)) / 4f
-                        r = (normalize(buffer.get(idx-width-1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx-width+1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx+width-1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel) +
-                             normalize(buffer.get(idx+width+1).toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel)) / 4f
+                        g = (normalize(pixels[idx-1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 1) ?: 0, whiteLevel) +
+                             normalize(pixels[idx+1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 1) ?: 0, whiteLevel) +
+                             normalize(pixels[idx-width].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 0) ?: 0, whiteLevel) +
+                             normalize(pixels[idx+width].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(1, 0) ?: 0, whiteLevel)) / 4f
+                        r = (normalize(pixels[idx-width-1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel) +
+                             normalize(pixels[idx-width+1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel) +
+                             normalize(pixels[idx+width-1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel) +
+                             normalize(pixels[idx+width+1].toInt() and 0xFFFF, blackLevel?.getOffsetForIndex(0, 0) ?: 0, whiteLevel)) / 4f
                     }
                 }
-                
+
                 val outIdx = idx * 3
                 output[outIdx] = r
                 output[outIdx + 1] = g

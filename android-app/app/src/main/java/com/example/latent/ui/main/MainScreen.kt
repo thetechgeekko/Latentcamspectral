@@ -35,6 +35,9 @@ import com.example.latent.camera.CameraViewfinder
 import com.example.latent.camera.PhysicalLens
 import com.example.latent.theme.*
 import com.example.latent.processing.FILM_STOCKS
+import com.example.latent.processing.DevelopmentQueue
+import com.example.latent.processing.DevelopmentStatus
+import com.example.latent.processing.RawJob
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import coil.compose.AsyncImage
@@ -42,6 +45,7 @@ import coil.request.ImageRequest
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.combinedClickable
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.latent.utils.LogManager
 
 // ── Film stocks the user can cycle through ──────────────────────────────
@@ -63,11 +67,14 @@ fun CameraScreen(modifier: Modifier = Modifier, onGalleryOpen: () -> Unit = {}) 
     ) }
     val selectedLens = discoveredLenses.getOrNull(selectedLensIndex)
 
-    // Capture state
-    var isDeveloping by remember { mutableStateOf(false) }
+    // True only while the shutter is open / RAW is being captured (< 1 s).
+    // Development state comes from DevelopmentQueue.status so the shutter stays free.
+    var isCapturing by remember { mutableStateOf(false) }
     var frameCount by remember { mutableIntStateOf(24) }
     var lastSaveMessage by remember { mutableStateOf("") }
     var lastDevelopedUri by remember { mutableStateOf<String?>(null) }
+
+    val developmentStatus by DevelopmentQueue.status.collectAsStateWithLifecycle()
     
     // Debug state
     var showDebugMenu by remember { mutableStateOf(false) }
@@ -85,40 +92,34 @@ fun CameraScreen(modifier: Modifier = Modifier, onGalleryOpen: () -> Unit = {}) 
     }
 
     // Wire capture callback
-    LaunchedEffect(controller, filmProcessor) {
+    LaunchedEffect(controller) {
         controller.captureCallback = object : CaptureCallback {
             override fun onCaptureStarted() {
-                isDeveloping = true
-                lastSaveMessage = "Capturing RAW..."
+                isCapturing = true
+                lastSaveMessage = "Capturing RAW…"
             }
 
             override fun onCaptureCompleted(savedUri: String) {
-                // Archival RAW saved
+                // Archival DNG saved — nothing extra needed here
             }
 
             override fun onCaptureFailed(error: String) {
-                isDeveloping = false
+                isCapturing = false
                 lastSaveMessage = error
             }
 
-            override fun onRawCaptured(
-                image: android.media.Image,
+            override fun onRawExtracted(
+                pixels: ShortArray,
+                width: Int,
+                height: Int,
                 result: android.hardware.camera2.TotalCaptureResult,
-                characteristics: android.hardware.camera2.CameraCharacteristics
+                characteristics: android.hardware.camera2.CameraCharacteristics,
             ) {
-                // IMPORTANT: We are processing the real deal here.
-                coroutineScope.launch {
-                    lastSaveMessage = "Developing Spectral..."
-                    val uri = filmProcessor.processRaw(image, result, characteristics, selectedFilmIndex)
-                    isDeveloping = false
-                    if (uri != null) {
-                        frameCount = (frameCount - 1).coerceAtLeast(0)
-                        lastSaveMessage = "Developed!"
-                        lastDevelopedUri = uri
-                    } else {
-                        lastSaveMessage = "Failed"
-                    }
-                }
+                isCapturing = false
+                frameCount = (frameCount - 1).coerceAtLeast(0)
+                lastSaveMessage = "Queued for darkroom"
+                val job = RawJob(pixels, width, height, result, characteristics, selectedFilmIndex)
+                DevelopmentQueue.enqueue(job, context)
             }
         }
     }
@@ -194,7 +195,7 @@ fun CameraScreen(modifier: Modifier = Modifier, onGalleryOpen: () -> Unit = {}) 
         TopStatusBar(
             filmStock = filmStockNames[selectedFilmIndex],
             frameCount = frameCount,
-            isDeveloping = isDeveloping,
+            developmentStatus = developmentStatus,
             onTitleLongClick = { showDebugMenu = true }
         )
 
@@ -211,7 +212,23 @@ fun CameraScreen(modifier: Modifier = Modifier, onGalleryOpen: () -> Unit = {}) 
             currentLut = previewLut,
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // ── Darkroom progress bar ───────────────────────────────
+        if (developmentStatus.isProcessing || developmentStatus.queueSize > 0) {
+            LinearProgressIndicator(
+                progress = { developmentStatus.progress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .height(2.dp),
+                color = LeicaRed,
+                trackColor = CameraDarkGray,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        } else {
+            Spacer(modifier = Modifier.height(10.dp))
+        }
 
         // ── Exposure Compensation Dial ──────────────────────────
         ExposureDial(
@@ -236,11 +253,12 @@ fun CameraScreen(modifier: Modifier = Modifier, onGalleryOpen: () -> Unit = {}) 
             selectedLensIndex = selectedLensIndex,
             onLensSelected = { selectedLensIndex = it },
             onShutterPressed = {
-                if (!isDeveloping) {
+                if (!isCapturing) {
                     controller.captureRawPhoto()
                 }
             },
-            isDeveloping = isDeveloping,
+            isCapturing = isCapturing,
+            queueSize = developmentStatus.queueSize,
             onGalleryOpen = onGalleryOpen,
         )
 
@@ -256,9 +274,10 @@ fun CameraScreen(modifier: Modifier = Modifier, onGalleryOpen: () -> Unit = {}) 
 private fun TopStatusBar(
     filmStock: String,
     frameCount: Int,
-    isDeveloping: Boolean,
+    developmentStatus: DevelopmentStatus,
     onTitleLongClick: () -> Unit = {},
 ) {
+    val isDeveloping = developmentStatus.isProcessing || developmentStatus.queueSize > 0
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -266,7 +285,6 @@ private fun TopStatusBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // App name
         Text(
             text = "LATENT",
             style = MaterialTheme.typography.titleLarge,
@@ -276,10 +294,11 @@ private fun TopStatusBar(
                 onLongClick = onTitleLongClick
             )
         )
-        // Film stock name or developing status
         if (isDeveloping) {
+            val pct = (developmentStatus.progress * 100).toInt()
+            val n = developmentStatus.queueSize
             Text(
-                text = "DEVELOPING...",
+                text = if (n > 1) "DARKROOM ($n) · $pct%" else "DARKROOM · $pct%",
                 style = MaterialTheme.typography.titleMedium,
                 color = LeicaRed,
                 letterSpacing = 2.sp,
@@ -292,7 +311,6 @@ private fun TopStatusBar(
                 letterSpacing = 2.sp,
             )
         }
-        // Recording indicator
         Text(
             text = if (isDeveloping) "◉" else "●",
             style = MaterialTheme.typography.bodyLarge,
@@ -432,7 +450,8 @@ private fun BottomControls(
     selectedLensIndex: Int,
     onLensSelected: (Int) -> Unit,
     onShutterPressed: () -> Unit,
-    isDeveloping: Boolean,
+    isCapturing: Boolean,
+    queueSize: Int,
     onGalleryOpen: () -> Unit = {},
 ) {
     val haptic = LocalHapticFeedback.current
@@ -460,11 +479,29 @@ private fun BottomControls(
             )
         }
 
-        // ── The Shutter Button ──
-        ShutterButton(
-            onClick = onShutterPressed,
-            isDeveloping = isDeveloping,
-        )
+        // ── The Shutter Button with queue badge ──
+        Box(contentAlignment = Alignment.TopEnd) {
+            ShutterButton(
+                onClick = onShutterPressed,
+                isCapturing = isCapturing,
+            )
+            if (queueSize > 0) {
+                Box(
+                    modifier = Modifier
+                        .offset(x = 4.dp, y = (-4).dp)
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .background(LeicaRed),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = queueSize.toString(),
+                        color = PureWhite,
+                        fontSize = 10.sp,
+                    )
+                }
+            }
+        }
 
         // Lens selector — cycle through discovered physical lenses
         val currentLens = lenses.getOrNull(selectedLensIndex)
@@ -492,7 +529,7 @@ private fun BottomControls(
 }
 
 @Composable
-private fun ShutterButton(onClick: () -> Unit, isDeveloping: Boolean = false) {
+private fun ShutterButton(onClick: () -> Unit, isCapturing: Boolean = false) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val haptic = LocalHapticFeedback.current
@@ -504,7 +541,7 @@ private fun ShutterButton(onClick: () -> Unit, isDeveloping: Boolean = false) {
     )
     val ringColor by animateColorAsState(
         targetValue = when {
-            isDeveloping -> RecordingRed
+            isCapturing -> RecordingRed
             isPressed -> LeicaRed
             else -> ShutterRing
         },
@@ -520,7 +557,7 @@ private fun ShutterButton(onClick: () -> Unit, isDeveloping: Boolean = false) {
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
-                enabled = !isDeveloping,
+                enabled = !isCapturing,
             ) {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 onClick()
@@ -533,7 +570,7 @@ private fun ShutterButton(onClick: () -> Unit, isDeveloping: Boolean = false) {
                 .clip(CircleShape)
                 .background(
                     Brush.radialGradient(
-                        colors = if (isDeveloping) listOf(
+                        colors = if (isCapturing) listOf(
                             RecordingRed.copy(alpha = 0.6f),
                             RecordingRed.copy(alpha = 0.3f),
                         ) else listOf(

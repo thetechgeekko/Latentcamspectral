@@ -45,7 +45,18 @@ interface CaptureCallback {
     fun onCaptureStarted()
     fun onCaptureCompleted(savedUri: String)
     fun onCaptureFailed(error: String)
-    fun onRawCaptured(image: android.media.Image, result: android.hardware.camera2.TotalCaptureResult, characteristics: android.hardware.camera2.CameraCharacteristics) {}
+    /**
+     * Called after the RAW image has been saved as DNG and the sensor pixels have been extracted
+     * into a [ShortArray]. The [android.media.Image] is already closed at this point, so it is
+     * safe to hand the data to a coroutine or background thread.
+     */
+    fun onRawExtracted(
+        pixels: ShortArray,
+        width: Int,
+        height: Int,
+        result: android.hardware.camera2.TotalCaptureResult,
+        characteristics: android.hardware.camera2.CameraCharacteristics,
+    ) {}
 }
 
 /**
@@ -216,15 +227,25 @@ class Camera2Controller(private val context: Context) {
             rawImageReader!!.setOnImageAvailableListener({ reader ->
                 val image = reader.acquireLatestImage() ?: return@setOnImageAvailableListener
                 val res = captureResult as? TotalCaptureResult
-                val lens = currentLens
-                if (res != null && lens != null) {
-                    val chars = cameraManager.getCameraCharacteristics(lens.physicalId ?: lens.cameraId)
-                    // 1. Archival Save (DNG)
+                val lensSnapshot = currentLens
+                if (res != null && lensSnapshot != null) {
+                    val chars = cameraManager.getCameraCharacteristics(lensSnapshot.physicalId ?: lensSnapshot.cameraId)
+                    // 1. Archival DNG save — must happen before image.close()
                     saveRawImage(image, res, chars)
-                    // 2. Authentic Processing (Raw Image)
-                    captureCallback?.onRawCaptured(image, res, chars)
+                    // 2. Extract sensor pixels synchronously into a ShortArray
+                    val plane = image.planes[0]
+                    val shortBuf = plane.buffer.asShortBuffer()
+                    val pixels = ShortArray(shortBuf.remaining())
+                    shortBuf.get(pixels)
+                    val w = image.width
+                    val h = image.height
+                    // 3. Close the Image — now safe; pixels are in the ShortArray
+                    image.close()
+                    // 4. Hand extracted data to the callback — no risk of closed-image crash
+                    captureCallback?.onRawExtracted(pixels, w, h, res, chars)
+                } else {
+                    image.close()
                 }
-                image.close()
             }, backgroundHandler)
         }
 
