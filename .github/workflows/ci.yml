@@ -57,7 +57,7 @@ jobs:
           echo "ANDROID_NDK_HOME=$HOME/android-ndk-r27c" >> $GITHUB_ENV
       - name: cargo check spectralfilm-ndk
         working-directory: spectralfilm-rs
-        run: cargo ndk --target aarch64-linux-android --android-platform 24 check -p spectralfilm-ndk
+        run: cargo ndk --target aarch64-linux-android --platform 24 check -p spectralfilm-ndk
 
   android-build:
     name: Android — build debug APK

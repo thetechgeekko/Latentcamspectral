@@ -57,7 +57,7 @@ jobs:
         run: |
           cargo ndk \
             --target ${{ matrix.target }} \
-            --android-platform 24 \
+            --platform 24 \
             build -p spectralfilm-ndk --release
 
       - name: Upload .so artifact
