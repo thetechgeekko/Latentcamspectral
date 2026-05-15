@@ -1,0 +1,170 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag (e.g. v1.0.0)'
+        required: true
+
+jobs:
+  build-native:
+    name: Build Rust .so — ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - target: aarch64-linux-android
+            abi: arm64-v8a
+          - target: armv7-linux-androideabi
+            abi: armeabi-v7a
+          - target: x86_64-linux-android
+            abi: x86_64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust stable + Android target
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            spectralfilm-rs/target
+          key: ${{ runner.os }}-${{ matrix.target }}-cargo-${{ hashFiles('spectralfilm-rs/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.target }}-cargo-
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+
+      - name: Install Android NDK r27
+        run: |
+          sudo apt-get install -y wget unzip
+          wget -q https://dl.google.com/android/repository/android-ndk-r27c-linux.zip -O ndk.zip
+          unzip -q ndk.zip -d $HOME
+          echo "ANDROID_NDK_HOME=$HOME/android-ndk-r27c" >> $GITHUB_ENV
+
+      - name: Build .so
+        working-directory: spectralfilm-rs
+        run: |
+          cargo ndk \
+            --target ${{ matrix.target }} \
+            --android-platform 24 \
+            build -p spectralfilm-ndk --release
+
+      - name: Upload .so artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: so-${{ matrix.abi }}
+          path: spectralfilm-rs/target/${{ matrix.target }}/release/libspectralfilm_ndk.so
+
+  build-apk:
+    name: Build & release APK
+    runs-on: ubuntu-latest
+    needs: build-native
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('android-app/**/*.gradle*', 'android-app/**/libs.versions.toml') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Download all .so artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: so-*
+          path: so-artifacts
+
+      - name: Place .so files into jniLibs
+        run: |
+          mkdir -p android-app/app/src/main/jniLibs/arm64-v8a
+          mkdir -p android-app/app/src/main/jniLibs/armeabi-v7a
+          mkdir -p android-app/app/src/main/jniLibs/x86_64
+          cp so-artifacts/so-arm64-v8a/libspectralfilm_ndk.so   android-app/app/src/main/jniLibs/arm64-v8a/
+          cp so-artifacts/so-armeabi-v7a/libspectralfilm_ndk.so android-app/app/src/main/jniLibs/armeabi-v7a/
+          cp so-artifacts/so-x86_64/libspectralfilm_ndk.so      android-app/app/src/main/jniLibs/x86_64/
+
+      # ── Signing (release keystore) ─────────────────────────────────────────
+      # To enable signed releases, add these four repository secrets:
+      #   KEYSTORE_BASE64   – base64 of your .jks file (base64 -w0 my.jks)
+      #   KEYSTORE_PASSWORD – keystore password
+      #   KEY_ALIAS         – key alias inside the keystore
+      #   KEY_PASSWORD      – key password
+      #
+      # Generate a keystore once:
+      #   keytool -genkey -v -keystore latentcam.jks -alias latentcam \
+      #     -keyalg RSA -keysize 2048 -validity 10000
+      - name: Decode keystore (if secret present)
+        if: ${{ env.KEYSTORE_BASE64 != '' }}
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: echo "$KEYSTORE_BASE64" | base64 --decode > android-app/latentcam.jks
+
+      - name: Build release APK
+        working-directory: android-app
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          if [ -f latentcam.jks ]; then
+            ./gradlew assembleRelease \
+              -Pandroid.injected.signing.store.file=$PWD/latentcam.jks \
+              -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+              -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+              -Pandroid.injected.signing.key.password="$KEY_PASSWORD" \
+              --no-daemon
+            echo "APK_PATH=android-app/app/build/outputs/apk/release/app-release.apk" >> $GITHUB_ENV
+            echo "APK_NAME=LatentCam-${{ github.ref_name }}.apk" >> $GITHUB_ENV
+          else
+            # No keystore configured — build debug-signed APK (can still sideload)
+            ./gradlew assembleDebug --no-daemon
+            echo "APK_PATH=android-app/app/build/outputs/apk/debug/app-debug.apk" >> $GITHUB_ENV
+            echo "APK_NAME=LatentCam-${{ github.ref_name }}-debug.apk" >> $GITHUB_ENV
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name || inputs.tag }}
+          name: LatentCam ${{ github.ref_name || inputs.tag }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          generate_release_notes: true
+          body: |
+            ## Install
+
+            Download the APK below and sideload it:
+            1. Enable **Settings → Install unknown apps** for your browser/Files app
+            2. Open the downloaded `.apk` file
+            3. Tap Install
+
+            > **Note:** This build targets ARM64 devices (most modern Android phones).
+            > armeabi-v7a and x86_64 builds are also included for older/emulator use.
+
+            ## What's new
+            See the auto-generated changelog below.
+          files: ${{ env.APK_PATH }}
