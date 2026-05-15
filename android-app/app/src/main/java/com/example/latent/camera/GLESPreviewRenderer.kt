@@ -35,17 +35,17 @@ class GLESPreviewRenderer {
             precision mediump float;
             in vec2 vTexCoord;
             uniform samplerExternalOES sTexture;
-            uniform mediump sampler3D sLut;
+            uniform highp sampler3D sLut;
             uniform bool uLutEnabled;
             out vec4 fragColor;
 
             void main() {
                 vec4 color = texture(sTexture, vTexCoord);
                 if (uLutEnabled) {
-                    // Camera preview is gamma-encoded (~sRGB); decode to linear for LUT lookup.
-                    // LUT was built in linear light. Re-encode output to sRGB for display.
-                    vec3 linear = pow(max(color.rgb, vec3(0.0)), vec3(2.2));
-                    vec3 film   = pow(max(texture(sLut, linear).rgb, vec3(0.0)), vec3(1.0 / 2.2));
+                    // ISP preview is already display-ready (gamma-encoded sRGB).
+                    // Apply LUT as a straight sRGB→sRGB colour look without
+                    // gamma decode/re-encode to avoid double-encoding artefacts.
+                    vec3 film = texture(sLut, clamp(color.rgb, 0.0, 1.0)).rgb;
                     fragColor = vec4(film, color.a);
                 } else {
                     fragColor = color;
@@ -61,6 +61,8 @@ class GLESPreviewRenderer {
     private var texCoordBuffer: FloatBuffer? = null
 
     private var lutEnabled = false
+    private var viewportW = 0
+    private var viewportH = 0
 
     var isInitialized = false
         private set
@@ -100,6 +102,12 @@ class GLESPreviewRenderer {
 
     fun getTextureId() = textureId
 
+    fun resize(w: Int, h: Int) {
+        viewportW = w
+        viewportH = h
+        if (isInitialized) GLES20.glViewport(0, 0, w, h)
+    }
+
     /**
      * Uploads a 3D LUT to the GPU.
      * @param lutData Interleaved RGB float data (size: size^3 * 3)
@@ -137,6 +145,7 @@ class GLESPreviewRenderer {
 
     fun draw(st: SurfaceTexture) {
         if (!isInitialized) return
+        if (viewportW > 0 && viewportH > 0) GLES20.glViewport(0, 0, viewportW, viewportH)
         GLES20.glClearColor(0f, 0f, 0f, 1f)
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 

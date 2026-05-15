@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
+import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 
@@ -99,44 +100,47 @@ class Camera2Controller(private val context: Context) {
      */
     fun discoverLenses(): List<PhysicalLens> {
         val lenses = mutableListOf<PhysicalLens>()
+        // Tracks (logicalId, physicalId) pairs already added so neither logical cameras
+        // that expose their physical sub-cameras nor physical cameras that also appear
+        // as standalone IDs in cameraIdList create duplicates.
+        val addedKeys = mutableSetOf<String>()
 
         for (cameraId in cameraManager.cameraIdList) {
-            val chars = cameraManager.getCameraCharacteristics(cameraId)
+            val chars = try {
+                cameraManager.getCameraCharacteristics(cameraId)
+            } catch (e: Exception) {
+                Log.w(TAG, "Cannot query camera $cameraId: ${e.message}"); continue
+            }
             val facing = chars.get(CameraCharacteristics.LENS_FACING) ?: continue
-
-            // Only rear-facing cameras
             if (facing != CameraCharacteristics.LENS_FACING_BACK) continue
 
-            val focalLengths = chars.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS) ?: floatArrayOf()
-            val apertures = chars.get(CameraCharacteristics.LENS_INFO_AVAILABLE_APERTURES) ?: floatArrayOf()
             val physicalIds = chars.physicalCameraIds
 
             if (physicalIds.isNotEmpty()) {
-                // Logical camera with hidden physical lenses
+                // Logical camera — enumerate every physical sub-camera it covers.
                 for (physId in physicalIds) {
+                    val key = "$cameraId/$physId"
+                    if (!addedKeys.add(key)) continue
+                    // Also mark the physId so it is skipped if it shows up as standalone.
+                    addedKeys.add(physId)
                     try {
                         val physChars = cameraManager.getCameraCharacteristics(physId)
                         val physFocal = physChars.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)?.firstOrNull() ?: 0f
                         val physAperture = physChars.get(CameraCharacteristics.LENS_INFO_AVAILABLE_APERTURES)?.firstOrNull() ?: 0f
-                        val label = focalLengthToLabel(physFocal)
-
-                        // Check RAW support for this physical sensor
                         val capabilities = physChars.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES)
-                        val supportsRaw = capabilities?.contains(
-                            CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_RAW
-                        ) == true
+                        val supportsRaw = capabilities?.contains(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_RAW) == true
                         val rawSize = if (supportsRaw) {
-                            val map = physChars.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
-                            map?.getOutputSizes(ImageFormat.RAW_SENSOR)?.maxByOrNull { it.width * it.height }
+                            physChars.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+                                ?.getOutputSizes(ImageFormat.RAW_SENSOR)
+                                ?.maxByOrNull { it.width * it.height }
                         } else null
-
                         lenses.add(PhysicalLens(
                             cameraId = cameraId,
                             physicalId = physId,
                             focalLength = physFocal,
                             aperture = physAperture,
                             facing = facing,
-                            label = label,
+                            label = focalLengthToLabel(physFocal),
                             isLogical = false,
                             supportsRaw = supportsRaw,
                             rawSize = rawSize,
@@ -146,16 +150,18 @@ class Camera2Controller(private val context: Context) {
                     }
                 }
             } else {
-                // Standalone camera (no physical sub-cameras)
+                // Standalone camera (or a physical sub-camera exposed directly).
+                // Skip if already added as a physical sub-camera of a logical parent.
+                if (!addedKeys.add(cameraId)) continue
+                val focalLengths = chars.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS) ?: floatArrayOf()
+                val apertures = chars.get(CameraCharacteristics.LENS_INFO_AVAILABLE_APERTURES) ?: floatArrayOf()
                 val capabilities = chars.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES)
-                val supportsRaw = capabilities?.contains(
-                    CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_RAW
-                ) == true
+                val supportsRaw = capabilities?.contains(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_RAW) == true
                 val rawSize = if (supportsRaw) {
-                    val map = chars.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
-                    map?.getOutputSizes(ImageFormat.RAW_SENSOR)?.maxByOrNull { it.width * it.height }
+                    chars.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+                        ?.getOutputSizes(ImageFormat.RAW_SENSOR)
+                        ?.maxByOrNull { it.width * it.height }
                 } else null
-
                 lenses.add(PhysicalLens(
                     cameraId = cameraId,
                     physicalId = null,
@@ -170,7 +176,6 @@ class Camera2Controller(private val context: Context) {
             }
         }
 
-        // Sort by focal length (ultrawide first, then main, then tele)
         return lenses.sortedBy { it.focalLength }
     }
 
@@ -226,25 +231,37 @@ class Camera2Controller(private val context: Context) {
             )
             rawImageReader!!.setOnImageAvailableListener({ reader ->
                 val image = reader.acquireLatestImage() ?: return@setOnImageAvailableListener
-                val res = captureResult as? TotalCaptureResult
+                // Wait up to 300 ms for the TotalCaptureResult to arrive; on some
+                // devices the image buffer is ready slightly before the metadata.
+                val res = pendingResultQueue.poll(300, TimeUnit.MILLISECONDS)
                 val lensSnapshot = currentLens
                 if (res != null && lensSnapshot != null) {
-                    val chars = cameraManager.getCameraCharacteristics(lensSnapshot.physicalId ?: lensSnapshot.cameraId)
-                    // 1. Archival DNG save — must happen before image.close()
-                    saveRawImage(image, res, chars)
-                    // 2. Extract sensor pixels synchronously into a ShortArray
-                    val plane = image.planes[0]
-                    val shortBuf = plane.buffer.asShortBuffer()
-                    val pixels = ShortArray(shortBuf.remaining())
-                    shortBuf.get(pixels)
-                    val w = image.width
-                    val h = image.height
-                    // 3. Close the Image — now safe; pixels are in the ShortArray
-                    image.close()
-                    // 4. Hand extracted data to the callback — no risk of closed-image crash
-                    captureCallback?.onRawExtracted(pixels, w, h, res, chars)
+                    try {
+                        val chars = cameraManager.getCameraCharacteristics(
+                            lensSnapshot.physicalId ?: lensSnapshot.cameraId
+                        )
+                        // 1. Archival DNG save — must happen before image.close()
+                        saveRawImage(image, res, chars)
+                        // 2. Extract sensor pixels synchronously into a ShortArray
+                        val plane = image.planes[0]
+                        val shortBuf = plane.buffer.asShortBuffer()
+                        val pixels = ShortArray(shortBuf.remaining())
+                        shortBuf.get(pixels)
+                        val w = image.width
+                        val h = image.height
+                        // 3. Close the Image — now safe; pixels are in the ShortArray
+                        image.close()
+                        // 4. Hand extracted data to the callback — no risk of closed-image crash
+                        captureCallback?.onRawExtracted(pixels, w, h, res, chars)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to process RAW image", e)
+                        image.close()
+                        captureCallback?.onCaptureFailed("RAW processing error: ${e.message}")
+                    }
                 } else {
                     image.close()
+                    Log.e(TAG, "Dropped RAW frame — capture result unavailable after 300 ms")
+                    captureCallback?.onCaptureFailed("Capture result timed out")
                 }
             }, backgroundHandler)
         }
@@ -296,6 +313,7 @@ class Camera2Controller(private val context: Context) {
     // ── Session with Physical Camera ID Locking ─────────────────────────
 
     private fun createCaptureSession(camera: CameraDevice, previewSurface: Surface, lens: PhysicalLens) {
+        if (cameraDevice == null) return  // Closed between onOpened and session creation
         val outputs = mutableListOf<OutputConfiguration>()
 
         // Preview output
@@ -346,7 +364,10 @@ class Camera2Controller(private val context: Context) {
 
     private fun startPreview(session: CameraCaptureSession, previewSurface: Surface) {
         try {
-            val previewRequest = session.device.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+            // Use the field rather than session.device so we bail cleanly if
+            // closeCamera() ran concurrently and nulled cameraDevice out.
+            val device = cameraDevice ?: return
+            val previewRequest = device.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
             previewRequest.addTarget(previewSurface)
             previewRequest.set(
                 CaptureRequest.CONTROL_AF_MODE,
@@ -355,6 +376,9 @@ class Camera2Controller(private val context: Context) {
             session.setRepeatingRequest(previewRequest.build(), null, backgroundHandler)
         } catch (e: CameraAccessException) {
             Log.e(TAG, "Failed to start preview", e)
+        } catch (e: IllegalStateException) {
+            // Camera was closed between onConfigured and createCaptureRequest — safe to ignore.
+            Log.w(TAG, "Camera closed before preview started", e)
         }
     }
 
@@ -371,6 +395,8 @@ class Camera2Controller(private val context: Context) {
         }
 
         captureCallback?.onCaptureStarted()
+        // Discard any stale result from a previous capture before firing a new one
+        pendingResultQueue.clear()
 
         try {
             val captureRequest = session.device.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
@@ -381,7 +407,6 @@ class Camera2Controller(private val context: Context) {
             // Also keep the preview alive during capture
             previewSurfaceRef?.let { captureRequest.addTarget(it) }
 
-            // Lock focus for the capture
             captureRequest.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
 
             session.capture(captureRequest.build(), object : CameraCaptureSession.CaptureCallback() {
@@ -391,6 +416,7 @@ class Camera2Controller(private val context: Context) {
                     result: TotalCaptureResult,
                 ) {
                     captureResult = result
+                    pendingResultQueue.offer(result)
                     Log.i(TAG, "Capture completed")
                 }
 
@@ -404,6 +430,8 @@ class Camera2Controller(private val context: Context) {
             }, backgroundHandler)
         } catch (e: CameraAccessException) {
             captureCallback?.onCaptureFailed("CameraAccessException: ${e.message}")
+        } catch (e: IllegalStateException) {
+            captureCallback?.onCaptureFailed("Camera closed during capture: ${e.message}")
         }
     }
 
@@ -443,8 +471,11 @@ class Camera2Controller(private val context: Context) {
         }
     }
 
-    // Store the latest capture result for DNG metadata
-    private var captureResult: CaptureResult? = null
+    // Bridges the capture-result callback and the image-available callback.
+    // Cleared before each new capture so we never use a stale result.
+    private val pendingResultQueue = LinkedBlockingQueue<TotalCaptureResult>(1)
+
+    @Volatile private var captureResult: CaptureResult? = null
 
     // ── Helpers ──────────────────────────────────────────────────────────
 
