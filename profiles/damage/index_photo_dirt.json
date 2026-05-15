@@ -1,0 +1,550 @@
+{
+  "dirt": {
+    "cereal_class_version": 1,
+    "name": "dirt",
+    "group_name": "film",
+    "revision": 1,
+    "default_id": "photo_super_35mm",
+    "profiles": [
+      {
+        "cereal_class_version": 2,
+        "name": "Photo 8 mm / Super 8",
+        "id": "photo_super_8mm",
+        "profile": {
+          "cereal_class_version": 1,
+          "enabled": true,
+          "opacity": {
+            "value": 85.0,
+            "min": 0.0,
+            "max": 100.0
+          },
+          "chromaticity": {
+            "value": 65.0,
+            "min": 0.0,
+            "max": 100.0
+          },
+          "total_amount": {
+            "value": 0.0,
+            "min": -50.0,
+            "max": 50.0
+          },
+          "period": 5,
+          "length": 120,
+          "period_jitter": true,
+          "amount_jitter": false,
+          "damage_types": [
+            {
+              "cereal_class_version": 0,
+              "enabled": true,
+              "id": "dust",
+              "name": "Dust",
+              "amount": {
+                "value": 10.0,
+                "min": 0.0,
+                "max": 128.0
+              },
+              "opacity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "scale": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "size_balance": {
+                "value": 75.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "negative_balance": {
+                "value": 35.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "chromaticity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              }
+            },
+            {
+              "enabled": true,
+              "id": "hairs",
+              "name": "Hairs",
+              "amount": {
+                "value": 7.0,
+                "min": 0.0,
+                "max": 128.0
+              },
+              "opacity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "scale": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "size_balance": {
+                "value": 60.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "negative_balance": {
+                "value": 30.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "chromaticity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              }
+            },
+            {
+              "enabled": true,
+              "id": "scratches",
+              "name": "Scratches",
+              "amount": {
+                "value": 15.0,
+                "min": 0.0,
+                "max": 128.0
+              },
+              "opacity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "scale": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "size_balance": {
+                "value": 80.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "negative_balance": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "chromaticity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              }
+            }
+          ]
+        }
+      },
+
+
+      {
+        "name": "Photo 16 mm / Super 16",
+        "id": "photo_super_16mm",
+        "profile": {
+          "enabled": true,
+          "opacity": {
+            "value": 85.0,
+            "min": 0.0,
+            "max": 100.0
+          },
+          "chromaticity": {
+            "value": 60.0,
+            "min": 0.0,
+            "max": 100.0
+          },
+          "total_amount": {
+            "value": 0.0,
+            "min": -50.0,
+            "max": 50.0
+          },
+          "period": 7,
+          "length": 120,
+          "period_jitter": true,
+          "damage_types": [
+            {
+              "enabled": true,
+              "id": "dust",
+              "name": "Dust",
+              "amount": {
+                "value": 4.0,
+                "min": 0.0,
+                "max": 128.0
+              },
+              "opacity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "scale": {
+                "value": 40.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "size_balance": {
+                "value": 60.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "negative_balance": {
+                "value": 35.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "chromaticity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              }
+            },
+            {
+              "enabled": true,
+              "id": "hairs",
+              "name": "Hairs",
+              "amount": {
+                "value": 3.0,
+                "min": 0.0,
+                "max": 128.0
+              },
+              "opacity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "scale": {
+                "value": 50.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "size_balance": {
+                "value": 60.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "negative_balance": {
+                "value": 30.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "chromaticity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              }
+            },
+            {
+              "enabled": true,
+              "id": "scratches",
+              "name": "Scratches",
+              "amount": {
+                "value": 10.0,
+                "min": 0.0,
+                "max": 128.0
+              },
+              "opacity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "scale": {
+                "value": 90.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "size_balance": {
+                "value": 80.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "negative_balance": {
+                "value": 90.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "chromaticity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              }
+            }
+          ]
+        }
+      },
+
+
+      {
+        "name": "Photo 35 mm / Super 35",
+        "id": "photo_super_35mm",
+        "profile": {
+          "enabled": true,
+          "opacity": {
+            "value": 85.0,
+            "min": 0.0,
+            "max": 100.0
+          },
+          "chromaticity": {
+            "value": 85.0,
+            "min": 0.0,
+            "max": 100.0
+          },
+          "total_amount": {
+            "value": 0.0,
+            "min": -50.0,
+            "max": 50.0
+          },
+          "period": 5,
+          "length": 120,
+          "period_jitter": true,
+          "damage_types": [
+            {
+              "enabled": true,
+              "id": "dust",
+              "name": "Dust",
+              "amount": {
+                "value": 5.0,
+                "min": 0.0,
+                "max": 128.0
+              },
+              "opacity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "scale": {
+                "value": 40.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "size_balance": {
+                "value": 50.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "negative_balance": {
+                "value": 30.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "chromaticity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              }
+            },
+            {
+              "enabled": true,
+              "id": "hairs",
+              "name": "Hairs",
+              "amount": {
+                "value": 3.0,
+                "min": 0.0,
+                "max": 128.0
+              },
+              "opacity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "scale": {
+                "value": 25.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "size_balance": {
+                "value": 50.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "negative_balance": {
+                "value": 30.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "chromaticity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              }
+            },
+            {
+              "enabled": true,
+              "id": "scratches",
+              "name": "Scratches",
+              "amount": {
+                "value": 8.0,
+                "min": 0.0,
+                "max": 128.0
+              },
+              "opacity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "scale": {
+                "value": 35.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "size_balance": {
+                "value": 80.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "negative_balance": {
+                "value": 90.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "chromaticity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              }
+            }
+          ]
+        }
+      },
+
+
+
+      {
+        "name": "65 mm / 70 mm",
+        "id": "65_70mm",
+        "profile": {
+          "enabled": true,
+          "opacity": {
+            "value": 85.0,
+            "min": 0.0,
+            "max": 60.0
+          },
+          "chromaticity": {
+            "value": 85.0,
+            "min": 0.0,
+            "max": 100.0
+          },
+          "total_amount": {
+            "value": 0.0,
+            "min": -50.0,
+            "max": 50.0
+          },
+          "period": 4,
+          "length": 120,
+          "period_jitter": true,
+          "damage_types": [
+            {
+              "enabled": true,
+              "id": "dust",
+              "name": "Dust",
+              "amount": {
+                "value": 2.0,
+                "min": 0.0,
+                "max": 128.0
+              },
+              "opacity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "scale": {
+                "value": 35.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "size_balance": {
+                "value": 40.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "negative_balance": {
+                "value": 30.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "chromaticity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              }
+            },
+            {
+              "enabled": true,
+              "id": "hairs",
+              "name": "Hairs",
+              "amount": {
+                "value": 2.0,
+                "min": 0.0,
+                "max": 128.0
+              },
+              "opacity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "scale": {
+                "value": 20.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "size_balance": {
+                "value": 40.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "negative_balance": {
+                "value": 30.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "chromaticity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              }
+            },
+            {
+              "enabled": true,
+              "id": "scratches",
+              "name": "Scratches",
+              "amount": {
+                "value": 3.0,
+                "min": 0.0,
+                "max": 128.0
+              },
+              "opacity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "scale": {
+                "value": 30.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "size_balance": {
+                "value": 65.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "negative_balance": {
+                "value": 80.0,
+                "min": 0.0,
+                "max": 100.0
+              },
+              "chromaticity": {
+                "value": 100.0,
+                "min": 0.0,
+                "max": 100.0
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

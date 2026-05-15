@@ -1,0 +1,526 @@
+{
+    "film": {
+        "cereal_class_version": 1,
+        "name": "halation",
+        "group_name": "film",
+        "revision": 1,
+        "default_id": "35mm",
+        "profiles": [
+            {
+                "cereal_class_version": 0,
+                "name": "8 mm / Super 8",
+                "id": "8mm",
+                "profile": {
+                    "cereal_class_version": 3,
+                    "enabled": true,
+                    "basic_size": 1080.0,
+                    "mask_view": {
+                        "mode": false,
+                        "level": 1.0
+                    },
+                    "exposure": {
+                        "threshold": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "low": {
+                            "value": 15.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "high": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "local_diffusion": {
+                        "value": 25.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "hue": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "power": {
+                        "value": 70.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "blue_compensation": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "global_diffusion": {
+                        "value": 45.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "opacity": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "smoothness": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                }
+            },
+
+            {
+                "name": "8 mm / Super 8 No Remjet",
+                "id": "8mm_no_remjet",
+                "profile": {
+                    "enabled": true,
+                    "basic_size": 1080.0,
+                    "mask_view": {
+                        "mode": false,
+                        "level": 1.0
+                    },
+                    "exposure": {
+                        "threshold": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "low": {
+                            "value": 0.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "high": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "local_diffusion": {
+                        "value": 45.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "hue": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "power": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "blue_compensation": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "global_diffusion": {
+                        "value": 75.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "opacity": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "smoothness": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                }
+            },
+            {
+                "name": "16 mm / Super 16",
+                "id": "16mm",
+                "profile": {
+                    "enabled": true,
+                    "basic_size": 1080.0,
+                    "mask_view": {
+                        "mode": false,
+                        "level": 1.0
+                    },
+                    "exposure": {
+                        "threshold": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "low": {
+                            "value": 15.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "high": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "local_diffusion": {
+                        "value": 20.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "hue": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "power": {
+                        "value": 70.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "blue_compensation": {
+                        "value": 0.0,
+                        "min": 100.0,
+                        "max": 100.0
+                    },
+                    "global_diffusion": {
+                        "value": 35.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "opacity": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "smoothness": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                }
+            },
+            {
+                "name": "16 mm / Super 16 No Remjet",
+                "id": "16mm_no_remjet",
+                "profile": {
+                    "enabled": true,
+                    "basic_size": 1080.0,
+                    "mask_view": {
+                        "mode": false,
+                        "level": 1.0
+                    },
+                    "exposure": {
+                        "threshold": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "low": {
+                            "value": 0.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "high": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "local_diffusion": {
+                        "value": 35.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "hue": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "power": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "blue_compensation": {
+                        "value": 0.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "global_diffusion": {
+                        "value": 55.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "opacity": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "smoothness": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                }
+            },
+            {
+                "name": "35 mm / Super 35",
+                "id": "35mm",
+                "profile": {
+                    "enabled": true,
+                    "basic_size": 1080.0,
+                    "mask_view": {
+                        "mode": false,
+                        "level": 1.0
+                    },
+                    "exposure": {
+                        "threshold": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "low": {
+                            "value": 15.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "high": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "local_diffusion": {
+                        "value": 15.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "hue": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "power": {
+                        "value": 70.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "blue_compensation": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "global_diffusion": {
+                        "value": 25.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "opacity": {
+                        "value": 70.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "smoothness": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                }
+            },
+            {
+                "name": "35 mm / Super 35 No Remjet",
+                "id": "35mm_no_remjet",
+                "profile": {
+                    "enabled": true,
+                    "basic_size": 1080.0,
+                    "mask_view": {
+                        "mode": false,
+                        "level": 1.0
+                    },
+                    "exposure": {
+                        "threshold": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "low": {
+                            "value": 0.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "high": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "local_diffusion": {
+                        "value": 25.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "hue": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "power": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "blue_compensation": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "global_diffusion": {
+                        "value": 35.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "opacity": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "smoothness": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                }
+            },
+            {
+                "name": "65 mm / 70 mm",
+                "id": "65mm",
+                "profile": {
+                    "enabled": true,
+                    "basic_size": 1080.0,
+                    "mask_view": {
+                        "mode": false,
+                        "level": 1.0
+                    },
+                    "exposure": {
+                        "threshold": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "low": {
+                            "value": 15.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "high": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "local_diffusion": {
+                        "value": 10.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "hue": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "power": {
+                        "value": 70.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "blue_compensation": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "global_diffusion": {
+                        "value": 20.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "opacity": {
+                        "value": 70.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "smoothness": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                }
+            },
+            {
+                "name": "65 mm / 70 mm No Remjet",
+                "id": "65mm_no_remjet",
+                "profile": {
+                    "enabled": true,
+                    "basic_size": 1080.0,
+                    "mask_view": {
+                        "mode": false,
+                        "level": 1.0
+                    },
+                    "exposure": {
+                        "threshold": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "low": {
+                            "value": 0.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "high": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "local_diffusion": {
+                        "value": 15.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "hue": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "power": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "blue_compensation": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "global_diffusion": {
+                        "value": 20.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "opacity": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "smoothness": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                }
+            }																		
+        ]
+    }
+}

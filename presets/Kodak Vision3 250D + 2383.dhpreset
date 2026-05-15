@@ -1,0 +1,762 @@
+{
+    "preset": {
+        "cereal_class_version": 3,
+        "caption": "Kodak Vision3 250D + 2383",
+        "creator": "Dehancer Team",
+        "time": "1768494265",
+        "state": {
+            "cereal_class_version": 7,
+            "enabled": true,
+            "input": {
+                "cereal_class_version": 8,
+                "enabled": true,
+                "space.type": 0,
+                "space.id": "by_pass",
+                "space.name": "By Pass",
+                "space.expandable": false,
+                "space.transform_func.is_identity": true,
+                "space.transform_lut.is_identity": true,
+                "camera": {
+                    "cereal_class_version": 2,
+                    "enabled": true,
+                    "profile": {
+                        "id": "",
+                        "is_exist": false,
+                        "normalize": true,
+                        "id_hash": 11160318154034397263,
+                        "local_path": "",
+                        "cache_dir_path": "",
+                        "storage_dir_path": "",
+                        "path_hash": 11160318154034397263,
+                        "cache_dir_hash": 11160318154034397263,
+                        "storage_dir_hash": 11160318154034397263
+                    },
+                    "exposure": {
+                        "cereal_class_version": 0,
+                        "enabled": true,
+                        "compensation": 0.0,
+                        "min": -3.0,
+                        "max": 3.0,
+                        "delim": 4.0
+                    }
+                },
+                "ca_reduction": {
+                    "cereal_class_version": 1,
+                    "enabled": false,
+                    "basic_size": 720.0,
+                    "amount": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "details": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                },
+                "wb": {
+                    "cereal_class_version": 1,
+                    "temperature": {
+                        "value": 0.0,
+                        "min": -100.0,
+                        "max": 100.0
+                    },
+                    "tint": {
+                        "value": 0.0,
+                        "min": -100.0,
+                        "max": 100.0
+                    }
+                },
+                "precision_half": true,
+                "space_active": true,
+                "developer": {
+                    "cereal_class_version": 2,
+                    "enabled": true,
+                    "contrast": {
+                        "value": 0.0,
+                        "min": -100.0,
+                        "max": 100.0
+                    },
+                    "midtone_point": {
+                        "value": 0.0,
+                        "min": -50.0,
+                        "max": 50.0
+                    },
+                    "color_contrast": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color_boost": {
+                        "value": 23.15789794921875,
+                        "min": -100.0,
+                        "max": 100.0
+                    }
+                }
+            },
+            "film": {
+                "cereal_class_version": 3,
+                "enabled": true,
+                "iso_index": 0.0,
+                "compression_impact": {
+                    "value": 100.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "compression_enabled": true,
+                "profile": {
+                    "id": "kodak-vision3-250d",
+                    "is_exist": true,
+                    "normalize": false,
+                    "id_hash": 17268136525273362561,
+                    "local_path": "/LUTs/film/17268136525273362561.mlut",
+                    "cache_dir_path": "",
+                    "storage_dir_path": "",
+                    "path_hash": 11185159337734859352,
+                    "cache_dir_hash": 11160318154034397263,
+                    "storage_dir_hash": 11160318154034397263
+                },
+                "compensate_paper": true
+            },
+            "expand": {
+                "cereal_class_version": 2,
+                "enabled": true,
+                "auto_enabled": false,
+                "blacks": {
+                    "cereal_class_version": 1,
+                    "value": 0.0,
+                    "min": -20.0,
+                    "max": 30.0
+                },
+                "whites": {
+                    "value": 100.0,
+                    "min": 30.0,
+                    "max": 120.0
+                },
+                "value.mode": 0,
+                "value.impact": 1.0,
+                "clipping": {
+                    "low": 0.0010000000474974514,
+                    "high": 0.0010000000474974514
+                }
+            },
+            "print_options": {
+                "cereal_class_version": 5,
+                "enabled": true,
+                "print_density": 4.0,
+                "exposure": -0.31578946113586428,
+                "tonal_contrast": {
+                    "value": 0.0,
+                    "min": -50.0,
+                    "max": 50.0
+                },
+                "color_density": {
+                    "value": 0.0,
+                    "min": -100.0,
+                    "max": 100.0
+                },
+                "saturation": {
+                    "value": 100.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "print_film_emulation": false,
+                "print_model": 200,
+                "color_head": {
+                    "cereal_class_version": 2,
+                    "enabled": false,
+                    "yellow": {
+                        "value": 0.0,
+                        "min": -50.0,
+                        "max": 50.0
+                    },
+                    "magenta": {
+                        "value": 0.0,
+                        "min": -50.0,
+                        "max": 50.0
+                    },
+                    "cyan": {
+                        "value": 0.0,
+                        "min": -50.0,
+                        "max": 50.0
+                    },
+                    "preserve_exposure": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "blending": {
+                        "cereal_class_version": 0,
+                        "mode": 0,
+                        "opacity": {
+                            "value": 100.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "preserve_density": false,
+                    "colors_gang": false
+                },
+                "cineon_print_space": false,
+                "print_media": {
+                    "enabled": true,
+                    "iso_index": 0.0,
+                    "compression_impact": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "compression_enabled": false,
+                    "profile": {
+                        "id": "kodak:2383:kodak:print-film",
+                        "is_exist": true,
+                        "normalize": true,
+                        "id_hash": 3422322268403429235,
+                        "local_path": "/LUTs/print/3422322268403429235.mlut",
+                        "cache_dir_path": "",
+                        "storage_dir_path": "",
+                        "path_hash": 5306334378453164370,
+                        "cache_dir_hash": 11160318154034397263,
+                        "storage_dir_hash": 11160318154034397263
+                    },
+                    "compensate_paper": false
+                },
+                "toning": {
+                    "cereal_class_version": 2,
+                    "enabled": false,
+                    "shadows": {
+                        "value": 0.0,
+                        "min": -100.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 0.0,
+                        "min": -100.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 0.0,
+                        "min": -100.0,
+                        "max": 100.0
+                    }
+                }
+            },
+            "grain_options": {
+                "cereal_class_version": 5,
+                "scale": {
+                    "value": 12.0,
+                    "min": 1.0,
+                    "max": 48.0
+                },
+                "enabled": true,
+                "canvas_size": {
+                    "width": 5200.0,
+                    "height": 3100.0
+                },
+                "amount": {
+                    "value": 20.139999389648439,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "shadows": {
+                    "value": 30.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "midtones": {
+                    "value": 47.3684196472168,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "highlights": {
+                    "value": 55.43174362182617,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "color": {
+                    "value": 65.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "cluster_size": 1.600000023841858,
+                "rotation": 1.0,
+                "is_colored": true,
+                "is_clustered": true,
+                "resolution_factor": {
+                    "value": 59.839637756347659,
+                    "min": 100.0,
+                    "max": 0.0
+                },
+                "resolution_type": 1,
+                "type": 0
+            },
+            "bloom_options": {
+                "cereal_class_version": 2,
+                "enabled": true,
+                "mask_view": {
+                    "mode": false,
+                    "level": 1.0
+                },
+                "basic_size": 1080.0,
+                "lights_mask_level": {
+                    "value": 100.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "edges_mask": {
+                    "edge_radius": 5.0,
+                    "edge_width": 4.0,
+                    "edge_strength": 2.0,
+                    "details_radius": {
+                        "value": 60.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                },
+                "bloom": {
+                    "thresholds": {
+                        "upper_value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "diffusion_amount": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "brightness_amplify": {
+                        "value": 41.272613525390628,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "inverse_mask": {
+                        "edge_radius": 32.0
+                    }
+                },
+                "falloff": {
+                    "value": 42.6809196472168,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "saturation": {
+                    "value": 100.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "impact": {
+                    "value": 50.0,
+                    "min": 0.0,
+                    "max": 100.0
+                }
+            },
+            "halation_options": {
+                "cereal_class_version": 3,
+                "enabled": true,
+                "basic_size": 1080.0,
+                "mask_view": {
+                    "mode": false,
+                    "level": 1.0
+                },
+                "exposure": {
+                    "threshold": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "low": {
+                        "value": 15.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "high": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                },
+                "local_diffusion": {
+                    "value": 15.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "hue": {
+                    "value": 50.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "power": {
+                    "value": 19.889999389648439,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "blue_compensation": {
+                    "value": 100.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "global_diffusion": {
+                    "value": 25.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "opacity": {
+                    "value": 70.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "smoothness": {
+                    "value": 50.0,
+                    "min": 0.0,
+                    "max": 100.0
+                }
+            },
+            "vignette_options": {
+                "cereal_class_version": 2,
+                "enabled": true,
+                "mask_view": {
+                    "mode": false,
+                    "level": 1.0
+                },
+                "gradient": {
+                    "value0": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "value1": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                },
+                "exposure": {
+                    "value": -0.8600000143051148,
+                    "min": -2.0,
+                    "max": 2.0
+                },
+                "position": {
+                    "coord": {
+                        "value0": 0.0,
+                        "value1": 0.0
+                    },
+                    "in_progress": false
+                },
+                "ratio": {
+                    "value": 0.0,
+                    "min": -100.0,
+                    "max": 100.0
+                },
+                "opacity": {
+                    "value": 100.0,
+                    "min": 0.0,
+                    "max": 100.0
+                }
+            },
+            "film_breath": {
+                "cereal_class_version": 2,
+                "enabled": false,
+                "period": 3,
+                "length": 24,
+                "exposure": {
+                    "cereal_class_version": 0,
+                    "impact": {
+                        "value": 10.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                },
+                "contrast": {
+                    "impact": {
+                        "value": 10.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                },
+                "color": {
+                    "impact": {
+                        "value": 10.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                },
+                "impact": {
+                    "value": 100.0,
+                    "min": 0.0,
+                    "max": 100.0
+                }
+            },
+            "gate_weave": {
+                "cereal_class_version": 2,
+                "enabled": false,
+                "auto_zoom": true,
+                "period": 3,
+                "length": 24,
+                "scale": 1.0,
+                "translate_x": 0.0,
+                "translate_y": 0.0,
+                "angle": 0.0,
+                "translate_curve_x": {
+                    "impact": {
+                        "value": 10.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                },
+                "translate_curve_y": {
+                    "impact": {
+                        "value": 10.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                },
+                "rotate": {
+                    "impact": {
+                        "value": 5.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                },
+                "impact": {
+                    "value": 100.0,
+                    "min": 0.0,
+                    "max": 100.0
+                }
+            },
+            "output": {
+                "cereal_class_version": 4,
+                "false_colors": {
+                    "cereal_class_version": 3,
+                    "enabled": false,
+                    "scale_enabled": true
+                },
+                "opacity": {
+                    "value": 100.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "space_active": true,
+                "clipping_colors": {
+                    "cereal_class_version": 1,
+                    "enabled": false
+                }
+            },
+            "export_options": {
+                "cereal_class_version": 4,
+                "options.resolution": 1,
+                "enabled.grain": false,
+                "enabled.bloom": false,
+                "enabled.halation": false,
+                "enabled.vignette": false,
+                "enabled.auto_expand": false,
+                "enabled.film_breath": false,
+                "enabled.gate_weave": false,
+                "enabled.camera_profile": true,
+                "enabled.film_damage": false,
+                "enabled.film_compression": true,
+                "enabled.developer": true,
+                "enabled.overscan": false
+            },
+            "film_compression": {
+                "cereal_class_version": 1,
+                "enabled": true,
+                "impact": {
+                    "value": 50.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "white_point": {
+                    "value": 100.0,
+                    "min": 50.0,
+                    "max": 120.0
+                },
+                "range": {
+                    "value": 20.526315689086915,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "color_density": {
+                    "value": 50.0,
+                    "min": 0.0,
+                    "max": 100.0
+                }
+            },
+            "film_damage": {
+                "cereal_class_version": 3,
+                "enabled": false,
+                "opacity": {
+                    "value": 100.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "chromaticity": {
+                    "value": 100.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "total_amount": {
+                    "value": 0.0,
+                    "min": -50.0,
+                    "max": 50.0
+                },
+                "period": 1,
+                "length": 120,
+                "period_jitter": true,
+                "damage_types": [
+                    {
+                        "cereal_class_version": 2,
+                        "enabled": true,
+                        "id": "dust",
+                        "name": "Dust",
+                        "amount": {
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 128.0
+                        },
+                        "opacity": {
+                            "value": 100.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "scale": {
+                            "value": 40.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "size_balance": {
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "negative_balance": {
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "chromaticity": {
+                            "value": 100.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    {
+                        "enabled": true,
+                        "id": "hairs",
+                        "name": "Hairs",
+                        "amount": {
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 128.0
+                        },
+                        "opacity": {
+                            "value": 100.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "scale": {
+                            "value": 40.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "size_balance": {
+                            "value": 60.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "negative_balance": {
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "chromaticity": {
+                            "value": 100.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    {
+                        "enabled": true,
+                        "id": "scratches",
+                        "name": "Scratches",
+                        "amount": {
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 128.0
+                        },
+                        "opacity": {
+                            "value": 100.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "scale": {
+                            "value": 40.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "size_balance": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "negative_balance": {
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "chromaticity": {
+                            "value": 100.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    }
+                ],
+                "amount_jitter": true,
+                "freeze": true
+            },
+            "overscan": {
+                "cereal_class_version": 2,
+                "enabled": false,
+                "id": "film_gates_academy_super_35mm_137",
+                "gate_shape_id": "film_gate_neat_normal",
+                "scale": {
+                    "value": 0.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "gate_defocus": {
+                    "value": 0.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "exposure": 0.0,
+                "static_gate": true,
+                "perforation_mode": 0,
+                "flip": false,
+                "lens_zoom": {
+                    "value": 100.0,
+                    "min": 0.0,
+                    "max": 100.0
+                },
+                "offset_x": {
+                    "value": 0.0,
+                    "min": -100.0,
+                    "max": 100.0
+                },
+                "offset_y": {
+                    "value": 0.0,
+                    "min": -100.0,
+                    "max": 100.0
+                },
+                "film_orientation": 0
+            }
+        },
+        "image": "",
+        "film": {
+            "cereal_class_version": 1,
+            "caption": "Kodak Vision3 250D"
+        },
+        "print": {
+            "caption": "Kodak 2383 Print Film"
+        }
+    }
+}

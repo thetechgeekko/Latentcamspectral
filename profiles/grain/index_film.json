@@ -1,0 +1,657 @@
+{
+    "film": {
+        "cereal_class_version": 1,
+        "name": "grain",
+        "group_name": "film",
+        "revision": 1,
+        "default_id": "35mm250",
+        "profiles": [
+            {
+                "cereal_class_version": 1,
+                "name": "8 mm ISO 50",
+                "id": "8mm50",
+                "profile": {
+                    "cereal_class_version": 5,
+                    "scale": {
+                        "value": 40.0,
+                        "min": 1.0,
+                        "max": 48.0
+                    },
+                    "enabled": true,
+                    "canvas_size": {
+                        "width": 5200.0,
+                        "height": 3100.0
+                    },
+                    "amount": {
+                        "cereal_class_version": 0,
+                        "value": 25.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "shadows": {
+                        "value": 30.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "cluster_size": 1.600000023841858,
+                    "rotation": 1.0,
+                    "is_colored": true,
+                    "is_clustered": true,
+                    "resolution_factor": {
+                        "value": 50.0,
+                        "min": 100.0,
+                        "max": 0.0
+                    },
+                    "resolution_type": 1,
+                    "type": 0
+                }
+            },
+
+            {
+                "cereal_class_version": 1,
+                "name": "8 mm ISO 250",
+                "id": "8mm250",
+                "profile": {
+                    "cereal_class_version": 5,
+                    "scale": {
+                        "value": 48.0,
+                        "min": 1.0,
+                        "max": 48.0
+                    },
+                    "enabled": true,
+                    "canvas_size": {
+                        "width": 5200.0,
+                        "height": 3100.0
+                    },
+                    "amount": {
+                        "cereal_class_version": 0,
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "shadows": {
+                        "value": 25.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 45.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "cluster_size": 1.600000023841858,
+                    "rotation": 1.0,
+                    "is_colored": true,
+                    "is_clustered": true,
+                    "resolution_factor": {
+                        "value": 70.0,
+                        "min": 100.0,
+                        "max": 0.0
+                    },
+                    "resolution_type": 1,
+                    "type": 0
+                }
+            },
+
+            {
+                "cereal_class_version": 1,
+                "name": "8 mm ISO 500",
+                "id": "8mm500",
+                "profile": {
+                    "cereal_class_version": 5,
+                    "scale": {
+                        "value": 48.0,
+                        "min": 1.0,
+                        "max": 48.0
+                    },
+                    "enabled": true,
+                    "canvas_size": {
+                        "width": 5200.0,
+                        "height": 3100.0
+                    },
+                    "amount": {
+                        "cereal_class_version": 0,
+                        "value": 70.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "shadows": {
+                        "value": 30.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 45.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color": {
+                        "value": 90.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "cluster_size": 1.600000023841858,
+                    "rotation": 1.0,
+                    "is_colored": true,
+                    "is_clustered": true,
+                    "resolution_factor": {
+                        "value": 75.0,
+                        "min": 100.0,
+                        "max": 0.0
+                    },
+                    "resolution_type": 1,
+                    "type": 0
+                }
+            },
+
+            {
+                "name": "16 mm ISO 50",
+                "id": "16mm50",
+                "profile": {
+                    "scale": {
+                        "value": 25.0,
+                        "min": 1.0,
+                        "max": 48.0
+                    },
+                    "enabled": true,
+                    "canvas_size": {
+                        "width": 5200.0,
+                        "height": 3100.0
+                    },
+                    "amount": {
+                        "value": 25.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "shadows": {
+                        "value": 30.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 55.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "cluster_size": 1.600000023841858,
+                    "rotation": 1.0,
+                    "is_colored": true,
+                    "is_clustered": true,
+                    "resolution_factor": {
+                        "value": 65.0,
+                        "min": 100.0,
+                        "max": 0.0
+                    },
+                    "resolution_type": 1,
+                    "type": 0
+                }
+            },
+
+            {
+                "name": "16 mm ISO 250",
+                "id": "16mm250",
+                "profile": {
+                    "scale": {
+                        "value": 25.0,
+                        "min": 1.0,
+                        "max": 48.0
+                    },
+                    "enabled": true,
+                    "canvas_size": {
+                        "width": 5200.0,
+                        "height": 3100.0
+                    },
+                    "amount": {
+                        "value": 45.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "shadows": {
+                        "value": 30.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 55.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "cluster_size": 1.600000023841858,
+                    "rotation": 1.0,
+                    "is_colored": true,
+                    "is_clustered": true,
+                    "resolution_factor": {
+                        "value": 75,
+                        "min": 100.0,
+                        "max": 0.0
+                    },
+                    "resolution_type": 1,
+                    "type": 0
+                }
+            },
+
+            {
+                "name": "16 mm ISO 500",
+                "id": "16mm500",
+                "profile": {
+                    "scale": {
+                        "value": 25.0,
+                        "min": 1.0,
+                        "max": 48.0
+                    },
+                    "enabled": true,
+                    "canvas_size": {
+                        "width": 5200.0,
+                        "height": 3100.0
+                    },
+                    "amount": {
+                        "value": 70.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "shadows": {
+                        "value": 30.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 45.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color": {
+                        "value": 75.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "cluster_size": 1.600000023841858,
+                    "rotation": 1.0,
+                    "is_colored": true,
+                    "is_clustered": true,
+                    "resolution_factor": {
+                        "value": 80.0,
+                        "min": 100.0,
+                        "max": 0.0
+                    },
+                    "resolution_type": 1,
+                    "type": 0
+                }
+            },
+
+            {
+                "name": "35 mm ISO 50",
+                "id": "35mm50",
+                "profile": {
+                    "scale": {
+                        "value": 8.0,
+                        "min": 1.0,
+                        "max": 48.0
+                    },
+                    "enabled": true,
+                    "canvas_size": {
+                        "width": 5200.0,
+                        "height": 3100.0
+                    },
+                    "amount": {
+                        "value": 30.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "shadows": {
+                        "value": 30.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 55.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "cluster_size": 1.600000023841858,
+                    "rotation": 1.0,
+                    "is_colored": true,
+                    "is_clustered": true,
+                    "resolution_factor": {
+                        "value": 70.0,
+                        "min": 100.0,
+                        "max": 0.0
+                    },
+                    "resolution_type": 1,
+                    "type": 0
+                }
+            },
+
+            {
+                "name": "35 mm ISO 250",
+                "id": "35mm250",
+                "profile": {
+                    "scale": {
+                        "value": 12.0,
+                        "min": 1.0,
+                        "max": 48.0
+                    },
+                    "enabled": true,
+                    "canvas_size": {
+                        "width": 5200.0,
+                        "height": 3100.0
+                    },
+                    "amount": {
+                        "value": 35.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "shadows": {
+                        "value": 30.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 55.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "cluster_size": 1.600000023841858,
+                    "rotation": 1.0,
+                    "is_colored": true,
+                    "is_clustered": true,
+                    "resolution_factor": {
+                        "value": 75.0,
+                        "min": 100.0,
+                        "max": 0.0
+                    },
+                    "resolution_type": 1,
+                    "type": 0
+                }
+            },
+
+            {
+                "name": "35 mm ISO 500",
+                "id": "35mm500",
+                "profile": {
+                    "scale": {
+                        "value": 16.0,
+                        "min": 1.0,
+                        "max": 48.0
+                    },
+                    "enabled": true,
+                    "canvas_size": {
+                        "width": 5200.0,
+                        "height": 3100.0
+                    },
+                    "amount": {
+                        "value": 40.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "shadows": {
+                        "value": 35.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 55.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color": {
+                        "value": 70.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "cluster_size": 1.600000023841858,
+                    "rotation": 1.0,
+                    "is_colored": true,
+                    "is_clustered": true,
+                    "resolution_factor": {
+                        "value": 80.0,
+                        "min": 100.0,
+                        "max": 0.0
+                    },
+                    "resolution_type": 1,
+                    "type": 0
+                }
+            },
+
+            {
+                "name": "65 mm ISO 50",
+                "id": "65mm50",
+                "profile": {
+                    "scale": {
+                        "value": 1.0,
+                        "min": 1.0,
+                        "max": 48.0
+                    },
+                    "enabled": true,
+                    "canvas_size": {
+                        "width": 5200.0,
+                        "height": 3100.0
+                    },
+                    "amount": {
+                        "value": 10.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "shadows": {
+                        "value": 30.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 45.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 55.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "cluster_size": 1.600000023841858,
+                    "rotation": 1.0,
+                    "is_colored": true,
+                    "is_clustered": true,
+                    "resolution_factor": {
+                        "value": 90.0,
+                        "min": 100.0,
+                        "max": 0.0
+                    },
+                    "resolution_type": 1,
+                    "type": 0
+                }
+            },
+
+            {
+                "name": "65 mm ISO 250",
+                "id": "65mm250",
+                "profile": {
+                    "scale": {
+                        "value": 2.0,
+                        "min": 1.0,
+                        "max": 48.0
+                    },
+                    "enabled": true,
+                    "canvas_size": {
+                        "width": 5200.0,
+                        "height": 3100.0
+                    },
+                    "amount": {
+                        "value": 15.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "shadows": {
+                        "value": 30.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 55.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "cluster_size": 1.600000023841858,
+                    "rotation": 1.0,
+                    "is_colored": true,
+                    "is_clustered": true,
+                    "resolution_factor": {
+                        "value": 90.0,
+                        "min": 100.0,
+                        "max": 0.0
+                    },
+                    "resolution_type": 1,
+                    "type": 0
+                }
+            },
+
+            {
+                "name": "65 mm ISO 500",
+                "id": "65mm500",
+                "profile": {
+                    "scale": {
+                        "value": 3.0,
+                        "min": 1.0,
+                        "max": 48.0
+                    },
+                    "enabled": true,
+                    "canvas_size": {
+                        "width": 5200.0,
+                        "height": 3100.0
+                    },
+                    "amount": {
+                        "value": 25.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "shadows": {
+                        "value": 25.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "midtones": {
+                        "value": 55.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "highlights": {
+                        "value": 65.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "color": {
+                        "value": 80.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "cluster_size": 1.600000023841858,
+                    "rotation": 1.0,
+                    "is_colored": true,
+                    "is_clustered": true,
+                    "resolution_factor": {
+                        "value": 100.0,
+                        "min": 100.0,
+                        "max": 0.0
+                    },
+                    "resolution_type": 1,
+                    "type": 0
+                }
+            }
+
+
+        ]
+    }
+}

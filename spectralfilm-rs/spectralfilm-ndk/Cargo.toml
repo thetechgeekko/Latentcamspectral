@@ -1,0 +1,19 @@
+[package]
+name = "spectralfilm-ndk"
+version = "0.3.1"
+edition = "2021"
+description = "JNI/NDK bridge for spectralfilm-core"
+license = "GPL-3.0"
+
+[lib]
+name = "spectralfilm_ndk"
+crate-type = ["cdylib"]
+
+[dependencies]
+spectralfilm-core = { path = "../spectralfilm-core" }
+
+jni = { version = "0.21", default-features = false }
+log = "0.4"
+
+[target.'cfg(target_os = "android")'.dependencies]
+android_logger = "0.14"

@@ -1,0 +1,154 @@
+{
+  "film": {
+    "cereal_class_version": 1,
+    "name": "film_breath",
+    "group_name": "film",
+    "revision": 1,
+    "default_id": "35mm",
+    "profiles": [
+      {
+        "cereal_class_version": 1,
+        "name": "8 mm / Super 8",
+        "id": "8mm",
+        "profile": {
+          "cereal_class_version": 2,
+          "enabled": true,
+          "period": 2,
+          "length": 24,
+          "exposure": {
+            "cereal_class_version": 0,
+            "impact": {
+              "value": 20.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "contrast": {
+            "impact": {
+              "value": 25.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "color": {
+            "impact": {
+              "value": 50.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "impact": {
+            "value": 100.0,
+            "min": 0.0,
+            "max": 100.0
+          }
+        }
+      },
+      {
+        "name": "16 mm / Super 16",
+        "id": "16mm",
+        "profile": {
+          "enabled": true,
+          "period": 3,
+          "length": 24,
+          "exposure": {
+            "impact": {
+              "value": 15.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "contrast": {
+            "impact": {
+              "value": 15.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "color": {
+            "impact": {
+              "value": 30.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "impact": {
+            "value": 100.0,
+            "min": 0.0,
+            "max": 100.0
+          }
+        }
+      },
+      {
+        "name": "35 mm / Super 35",
+        "id": "35mm",
+        "profile": {
+          "enabled": true,
+          "period": 3,
+          "length": 24,
+          "exposure": {
+            "impact": {
+              "value": 10.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "contrast": {
+            "impact": {
+              "value": 10.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "color": {
+            "impact": {
+              "value": 20.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "impact": {
+            "value": 100.0,
+            "min": 0.0,
+            "max": 100.0
+          }
+        }
+      },
+      {
+        "name": "65 mm / 70 mm",
+        "id": "65mm",
+        "profile": {
+          "enabled": true,
+          "period": 4,
+          "length": 24,
+          "exposure": {
+            "impact": {
+              "value": 7.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "contrast": {
+            "impact": {
+              "value": 7.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "color": {
+            "impact": {
+              "value": 15.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "impact": {
+            "value": 100.0,
+            "min": 0.0,
+            "max": 100.0
+          }
+        }
+      }
+    ]
+  }
+}

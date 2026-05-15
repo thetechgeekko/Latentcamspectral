@@ -1,0 +1,262 @@
+{
+    "film": {
+        "cereal_class_version": 1,
+        "name": "bloom",
+        "group_name": "film",
+        "revision": 1,
+        "default_id": "35mm",
+        "profiles": [
+
+            {
+                "cereal_class_version": 0,
+                "name": "8 mm / Super 8",
+                "id": "8mm",
+                "profile": {
+                    "cereal_class_version": 2,
+                    "enabled": true,
+                    "mask_view": {
+                        "mode": false,
+                        "level": 1.0
+                    },
+                    "basic_size": 1080.0,
+                    "lights_mask_level": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "edges_mask": {
+                        "edge_radius": 5.0,
+                        "edge_width": 4.0,
+                        "edge_strength": 2.0,
+                        "details_radius": {
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "bloom": {
+                        "thresholds": {
+                            "upper_value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "diffusion_amount": {
+                            "value": 100.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "brightness_amplify": {
+                            "value": 90.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "inverse_mask": {
+                            "edge_radius": 32.0
+                        }
+                    },
+                    "falloff": {
+                        "value": 40.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "saturation": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "impact": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                }
+            },
+            {
+                "name": "16 mm / Super 16",
+                "id": "16mm",
+                "profile": {
+                    "enabled": true,
+                    "mask_view": {
+                        "mode": false,
+                        "level": 1.0
+                    },
+                    "basic_size": 1080.0,
+                    "lights_mask_level": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "edges_mask": {
+                        "edge_radius": 5.0,
+                        "edge_width": 4.0,
+                        "edge_strength": 2.0,
+                        "details_radius": {
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "bloom": {
+                        "thresholds": {
+                            "upper_value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "diffusion_amount": {
+                            "value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "brightness_amplify": {
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "inverse_mask": {
+                            "edge_radius": 32.0
+                        }
+                    },
+                    "falloff": {
+                        "value": 20.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "saturation": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "impact": {
+                        "value": 60.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                }
+            },
+            {
+                "name": "35 mm / Super 35",
+                "id": "35mm",
+                "profile": {
+                    "enabled": true,
+                    "mask_view": {
+                        "mode": false,
+                        "level": 1.0
+                    },
+                    "basic_size": 1080.0,
+                    "lights_mask_level": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "edges_mask": {
+                        "edge_radius": 5.0,
+                        "edge_width": 4.0,
+                        "edge_strength": 2.0,
+                        "details_radius": {
+                            "value": 60.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "bloom": {
+                        "thresholds": {
+                            "upper_value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "diffusion_amount": {
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "brightness_amplify": {
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "inverse_mask": {
+                            "edge_radius": 32.0
+                        }
+                    },
+                    "falloff": {
+                        "value": 30.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "saturation": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "impact": {
+                        "value": 50.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                }
+            },
+            {
+                "name": "65 mm / 70 mm",
+                "id": "65mm",
+                "profile": {
+                    "enabled": true,
+                    "mask_view": {
+                        "mode": false,
+                        "level": 1.0
+                    },
+                    "basic_size": 1080.0,
+                    "lights_mask_level": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "edges_mask": {
+                        "edge_radius": 5.0,
+                        "edge_width": 4.0,
+                        "edge_strength": 2.0,
+                        "details_radius": {
+                            "value": 70.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        }
+                    },
+                    "bloom": {
+                        "thresholds": {
+                            "upper_value": 80.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "diffusion_amount": {
+                            "value": 35.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "brightness_amplify": {
+                            "value": 40.0,
+                            "min": 0.0,
+                            "max": 100.0
+                        },
+                        "inverse_mask": {
+                            "edge_radius": 32.0
+                        }
+                    },
+                    "falloff": {
+                        "value": 20.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "saturation": {
+                        "value": 100.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    },
+                    "impact": {
+                        "value": 40.0,
+                        "min": 0.0,
+                        "max": 100.0
+                    }
+                }
+            }
+        ]
+    }
+}

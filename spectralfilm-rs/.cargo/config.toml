@@ -1,0 +1,11 @@
+# Optional Android linker configuration.
+# Adjust NDK path/toolchain version to match your machine if cargo-ndk is not used.
+
+[target.aarch64-linux-android]
+# linker = "<ANDROID_NDK_HOME>/toolchains/llvm/prebuilt/<host>/bin/aarch64-linux-android24-clang"
+
+[target.armv7-linux-androideabi]
+# linker = "<ANDROID_NDK_HOME>/toolchains/llvm/prebuilt/<host>/bin/armv7a-linux-androideabi24-clang"
+
+[target.x86_64-linux-android]
+# linker = "<ANDROID_NDK_HOME>/toolchains/llvm/prebuilt/<host>/bin/x86_64-linux-android24-clang"

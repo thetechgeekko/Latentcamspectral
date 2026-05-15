@@ -1,0 +1,174 @@
+{
+  "film": {
+    "cereal_class_version": 1,
+    "name": "gate_weave",
+    "group_name": "film",
+    "revision": 1,
+    "default_id": "35mm",
+    "profiles": [
+      {
+        "cereal_class_version": 1,
+        "name": "8 mm / Super 8",
+        "id": "8mm",
+        "profile": {
+          "cereal_class_version": 2,
+          "enabled": true,
+          "auto_zoom": true,
+          "period": 1,
+          "length": 24,
+          "scale": 1.0,
+          "translate_x": 0.0,
+          "translate_y": 0.0,
+          "angle": 0.0,
+          "translate_curve_x": {
+            "cereal_class_version": 0,
+            "impact": {
+              "value": 20.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "translate_curve_y": {
+            "impact": {
+              "value": 40.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "rotate": {
+            "impact": {
+              "value": 5.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "impact": {
+            "value": 100.0,
+            "min": 0.0,
+            "max": 100.0
+          }
+        }
+      },
+      {
+        "name": "16 mm / Super 16",
+        "id": "16mm",
+        "profile": {
+          "enabled": true,
+          "auto_zoom": true,
+          "period": 2,
+          "length": 24,
+          "scale": 1.0,
+          "translate_x": 0.0,
+          "translate_y": 0.0,
+          "angle": 0.0,
+          "translate_curve_x": {
+            "impact": {
+              "value": 10.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "translate_curve_y": {
+            "impact": {
+              "value": 25.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "rotate": {
+            "impact": {
+              "value": 5.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "impact": {
+            "value": 100.0,
+            "min": 0.0,
+            "max": 100.0
+          }
+        }
+      },
+      {
+        "name": "35 mm / Super 35",
+        "id": "35mm",
+        "profile": {
+          "enabled": true,
+          "auto_zoom": true,
+          "period": 2,
+          "length": 24,
+          "scale": 1.0,
+          "translate_x": 0.0,
+          "translate_y": 0.0,
+          "angle": 0.0,
+          "translate_curve_x": {
+            "impact": {
+              "value": 5.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "translate_curve_y": {
+            "impact": {
+              "value": 17.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "rotate": {
+            "impact": {
+              "value": 3.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "impact": {
+            "value": 100.0,
+            "min": 0.0,
+            "max": 100.0
+          }
+        }
+      },
+      {
+        "name": "65 mm / 70 mm",
+        "id": "65mm",
+        "profile": {
+          "enabled": true,
+          "auto_zoom": true,
+          "period": 2,
+          "length": 24,
+          "scale": 1.0,
+          "translate_x": 0.0,
+          "translate_y": 0.0,
+          "angle": 0.0,
+          "translate_curve_x": {
+            "impact": {
+              "value": 5.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "translate_curve_y": {
+            "impact": {
+              "value": 7.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "rotate": {
+            "impact": {
+              "value": 3.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "impact": {
+            "value": 100.0,
+            "min": 0.0,
+            "max": 100.0
+          }
+        }
+      }
+    ]
+  }
+}
