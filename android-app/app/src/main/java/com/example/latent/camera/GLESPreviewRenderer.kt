@@ -22,10 +22,11 @@ class GLESPreviewRenderer {
         private const val VERTEX_SHADER = """#version 300 es
             in vec4 aPosition;
             in vec2 aTexCoord;
+            uniform mat4 uTexMatrix;
             out vec2 vTexCoord;
             void main() {
                 gl_Position = aPosition;
-                vTexCoord = aTexCoord;
+                vTexCoord = (uTexMatrix * vec4(aTexCoord, 0.0, 1.0)).xy;
             }
         """
 
@@ -41,7 +42,11 @@ class GLESPreviewRenderer {
             void main() {
                 vec4 color = texture(sTexture, vTexCoord);
                 if (uLutEnabled) {
-                    fragColor = texture(sLut, color.rgb);
+                    // Camera preview is gamma-encoded (~sRGB); decode to linear for LUT lookup.
+                    // LUT was built in linear light. Re-encode output to sRGB for display.
+                    vec3 linear = pow(max(color.rgb, vec3(0.0)), vec3(2.2));
+                    vec3 film   = pow(max(texture(sLut, linear).rgb, vec3(0.0)), vec3(1.0 / 2.2));
+                    fragColor = vec4(film, color.a);
                 } else {
                     fragColor = color;
                 }
@@ -136,6 +141,11 @@ class GLESPreviewRenderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
         GLES20.glUseProgram(program)
+
+        // Upload SurfaceTexture transform matrix — corrects camera sensor rotation
+        val texMatrix = FloatArray(16)
+        st.getTransformMatrix(texMatrix)
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(program, "uTexMatrix"), 1, false, texMatrix, 0)
 
         val ph = GLES20.glGetAttribLocation(program, "aPosition")
         GLES20.glEnableVertexAttribArray(ph)
