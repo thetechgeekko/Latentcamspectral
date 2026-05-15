@@ -59,6 +59,8 @@ fun CameraViewfinder(
     var renderer by remember { mutableStateOf<GLESPreviewRenderer?>(null) }
     var eglCore by remember { mutableStateOf<EglCore?>(null) }
     var cameraSurfaceTexture by remember { mutableStateOf<SurfaceTexture?>(null) }
+    var viewWidth by remember { mutableIntStateOf(0) }
+    var viewHeight by remember { mutableIntStateOf(0) }
 
     // Permission launcher
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -90,7 +92,9 @@ fun CameraViewfinder(
             controller.closeCamera()
             controller.stopBackgroundThread()
             controller.startBackgroundThread()
-            val previewSize = controller.getPreviewSize(lens.cameraId, 1920, 1080)
+            val w = viewWidth.takeIf { it > 0 } ?: 1920
+            val h = viewHeight.takeIf { it > 0 } ?: 1080
+            val previewSize = controller.getPreviewSize(lens.cameraId, w, h)
             st.setDefaultBufferSize(previewSize.width, previewSize.height)
             controller.openCamera(lens, Surface(st))
         }
@@ -144,6 +148,9 @@ fun CameraViewfinder(
                     TextureView(ctx).also { tv ->
                         tv.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
                             override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+                                viewWidth = width
+                                viewHeight = height
+
                                 // 1. Init EGL & Renderer
                                 val core = EglCore()
                                 eglCore = core
@@ -152,12 +159,13 @@ fun CameraViewfinder(
 
                                 val r = GLESPreviewRenderer()
                                 r.init()
+                                r.resize(width, height)
                                 renderer = r
 
                                 // 2. Create Camera Input Texture
                                 val camST = SurfaceTexture(r.getTextureId())
                                 cameraSurfaceTexture = camST
-                                
+
                                 // 3. Start Render Loop
                                 camST.setOnFrameAvailableListener {
                                     core.makeCurrent(windowSurface)
@@ -166,16 +174,20 @@ fun CameraViewfinder(
                                     core.swapBuffers(windowSurface)
                                 }
 
-                                // 4. Open Camera
+                                // 4. Open Camera — use actual TextureView pixel dimensions
                                 if (selectedLens != null) {
                                     controller.startBackgroundThread()
-                                    val previewSize = controller.getPreviewSize(selectedLens.cameraId, 1920, 1080)
+                                    val previewSize = controller.getPreviewSize(selectedLens.cameraId, width, height)
                                     camST.setDefaultBufferSize(previewSize.width, previewSize.height)
                                     controller.openCamera(selectedLens, Surface(camST))
                                 }
                             }
 
-                            override fun onSurfaceTextureSizeChanged(s: SurfaceTexture, w: Int, h: Int) {}
+                            override fun onSurfaceTextureSizeChanged(s: SurfaceTexture, w: Int, h: Int) {
+                                viewWidth = w
+                                viewHeight = h
+                                renderer?.resize(w, h)
+                            }
                             override fun onSurfaceTextureDestroyed(s: SurfaceTexture): Boolean {
                                 controller.closeCamera()
                                 renderer?.release()
