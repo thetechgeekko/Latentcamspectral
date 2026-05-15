@@ -57,31 +57,40 @@ class GLESPreviewRenderer {
 
     private var lutEnabled = false
 
+    var isInitialized = false
+        private set
+
     fun init() {
-        program = createProgram(VERTEX_SHADER, FRAGMENT_SHADER)
-        
-        val textures = IntArray(1)
-        GLES20.glGenTextures(1, textures, 0)
-        textureId = textures[0]
-        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textureId)
-        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR.toFloat())
-        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR.toFloat())
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
+        try {
+            program = createProgram(VERTEX_SHADER, FRAGMENT_SHADER)
 
-        // Vertex data (Full screen quad)
-        val vData = floatArrayOf(
-            -1f, -1f, 1f, -1f, -1f, 1f, 1f, 1f
-        )
-        vertexBuffer = ByteBuffer.allocateDirect(vData.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(vData)
-        vertexBuffer?.position(0)
+            val textures = IntArray(1)
+            GLES20.glGenTextures(1, textures, 0)
+            textureId = textures[0]
+            GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textureId)
+            GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR.toFloat())
+            GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR.toFloat())
+            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
+            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
 
-        // Texture coordinates
-        val tData = floatArrayOf(
-            0f, 0f, 1f, 0f, 0f, 1f, 1f, 1f
-        )
-        texCoordBuffer = ByteBuffer.allocateDirect(tData.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(tData)
-        texCoordBuffer?.position(0)
+            // Vertex data (Full screen quad)
+            val vData = floatArrayOf(
+                -1f, -1f, 1f, -1f, -1f, 1f, 1f, 1f
+            )
+            vertexBuffer = ByteBuffer.allocateDirect(vData.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(vData)
+            vertexBuffer?.position(0)
+
+            // Texture coordinates
+            val tData = floatArrayOf(
+                0f, 0f, 1f, 0f, 0f, 1f, 1f, 1f
+            )
+            texCoordBuffer = ByteBuffer.allocateDirect(tData.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(tData)
+            texCoordBuffer?.position(0)
+
+            isInitialized = true
+        } catch (e: Exception) {
+            Log.e(TAG, "GL init failed", e)
+        }
     }
 
     fun getTextureId() = textureId
@@ -92,6 +101,7 @@ class GLESPreviewRenderer {
      * @param size Typically 33
      */
     fun updateLut(lutData: FloatArray, size: Int) {
+        if (!isInitialized) return
         if (lutTextureId != -1) {
             val textures = intArrayOf(lutTextureId)
             GLES20.glDeleteTextures(1, textures, 0)
@@ -121,6 +131,7 @@ class GLESPreviewRenderer {
     }
 
     fun draw(st: SurfaceTexture) {
+        if (!isInitialized) return
         GLES20.glClearColor(0f, 0f, 0f, 1f)
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 

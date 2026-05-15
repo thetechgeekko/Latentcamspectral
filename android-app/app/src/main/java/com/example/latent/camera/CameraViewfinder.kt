@@ -22,8 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -107,6 +109,17 @@ fun CameraViewfinder(
             ),
         contentAlignment = Alignment.Center,
     ) {
+        if (!EglCore.isGles3Supported(LocalContext.current)) {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    "This device does not support OpenGL ES 3.0.\nLive preview is unavailable.",
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                )
+            }
+            return
+        }
+
         if (hasPermission) {
             AndroidView(
                 factory = { ctx ->

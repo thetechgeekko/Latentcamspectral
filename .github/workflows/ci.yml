@@ -30,6 +30,35 @@ jobs:
         working-directory: spectralfilm-rs
         run: cargo check --workspace
 
+  ndk-check:
+    name: Rust — cargo check NDK (aarch64)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust + Android target
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            spectralfilm-rs/target
+          key: ${{ runner.os }}-aarch64-cargo-${{ hashFiles('spectralfilm-rs/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-aarch64-cargo-
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+      - name: Install Android NDK r27c
+        run: |
+          wget -q https://dl.google.com/android/repository/android-ndk-r27c-linux.zip -O ndk.zip
+          unzip -q ndk.zip -d $HOME
+          echo "ANDROID_NDK_HOME=$HOME/android-ndk-r27c" >> $GITHUB_ENV
+      - name: cargo check spectralfilm-ndk
+        working-directory: spectralfilm-rs
+        run: cargo ndk --target aarch64-linux-android --android-platform 24 check -p spectralfilm-ndk
+
   android-build:
     name: Android — build debug APK
     runs-on: ubuntu-latest
