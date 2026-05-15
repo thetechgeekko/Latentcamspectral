@@ -19,32 +19,31 @@ class GLESPreviewRenderer {
     companion object {
         private const val TAG = "GLESPreviewRenderer"
 
-        private const val VERTEX_SHADER = """
-            attribute vec4 aPosition;
-            attribute vec2 aTexCoord;
-            varying vec2 vTexCoord;
+        private const val VERTEX_SHADER = """#version 300 es
+            in vec4 aPosition;
+            in vec2 aTexCoord;
+            out vec2 vTexCoord;
             void main() {
                 gl_Position = aPosition;
                 vTexCoord = aTexCoord;
             }
         """
 
-        private const val FRAGMENT_SHADER = """
-            #extension GL_OES_EGL_image_external : require
+        private const val FRAGMENT_SHADER = """#version 300 es
+            #extension GL_OES_EGL_image_external_essl3 : require
             precision mediump float;
-            varying vec2 vTexCoord;
+            in vec2 vTexCoord;
             uniform samplerExternalOES sTexture;
-            uniform sampler3D sLut;
+            uniform mediump sampler3D sLut;
             uniform bool uLutEnabled;
+            out vec4 fragColor;
 
             void main() {
-                vec4 color = texture2D(sTexture, vTexCoord);
+                vec4 color = texture(sTexture, vTexCoord);
                 if (uLutEnabled) {
-                    // Apply 3D LUT. Spectral engine LUTs are usually 33x33x33.
-                    // We use textureLod to avoid artifacts.
-                    gl_FragColor = texture(sLut, color.rgb);
+                    fragColor = texture(sLut, color.rgb);
                 } else {
-                    gl_FragColor = color;
+                    fragColor = color;
                 }
             }
         """
