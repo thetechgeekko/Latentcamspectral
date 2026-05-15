@@ -523,7 +523,7 @@ pub extern "system" fn Java_com_latentcam_spectralfilm_SpectralEngine_nativeGetL
 
 #[no_mangle]
 pub extern "system" fn Java_com_latentcam_spectralfilm_SpectralEngine_nativeGetTimings(
-    mut env: JNIEnv,
+    env: JNIEnv,
     _class: JClass,
     handle: jlong,
 ) -> jstring {

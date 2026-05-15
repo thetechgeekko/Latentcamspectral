@@ -24,14 +24,32 @@ data class FilmStock(
 )
 
 val FILM_STOCKS = listOf(
-    FilmStock("Kodak Portra 400", "kodak_portra_400.json", "kodak_portra_endura.json"),
-    FilmStock("Cinestill 800T", "kodak_vision3_500t.json", "kodak_endura_premier.json"),
-    FilmStock("Fuji Superia 200", "fujifilm_c200.json", "fujifilm_crystal_archive_typeii.json"),
-    FilmStock("Kodak Gold 200", "kodak_gold_200.json", "kodak_endura_premier.json"),
-    FilmStock("Kodak Ektar 100", "kodak_ektar_100.json", "kodak_endura_premier.json"),
-    FilmStock("Ilford HP5 Plus", "kodak_portra_400.json", "kodak_portra_endura.json"),
-    FilmStock("Fuji Velvia 50", "fujifilm_velvia_100.json", "fujifilm_crystal_archive_typeii.json"),
-    FilmStock("Kodak Tri-X 400", "kodak_portra_400.json", "kodak_portra_endura.json"),
+    // ── Kodak Color Negative ───────────────────────────────────────────────
+    FilmStock("Kodak Portra 160",        "kodak_portra_160.json",        "kodak_portra_endura.json"),
+    FilmStock("Kodak Portra 400",        "kodak_portra_400.json",        "kodak_portra_endura.json"),
+    FilmStock("Kodak Portra 800",        "kodak_portra_800.json",        "kodak_portra_endura.json"),
+    FilmStock("Kodak Portra 800 +1",     "kodak_portra_800_push1.json",  "kodak_portra_endura.json"),
+    FilmStock("Kodak Portra 800 +2",     "kodak_portra_800_push2.json",  "kodak_portra_endura.json"),
+    FilmStock("Kodak Ektar 100",         "kodak_ektar_100.json",         "kodak_endura_premier.json"),
+    FilmStock("Kodak Gold 200",          "kodak_gold_200.json",          "kodak_endura_premier.json"),
+    FilmStock("Kodak Ultramax 400",      "kodak_ultramax_400.json",      "kodak_ultra_endura.json"),
+    FilmStock("Kodak Verita 200D",       "kodak_verita_200d.json",       "kodak_endura_premier.json"),
+    // ── Fujifilm Color Negative ────────────────────────────────────────────
+    FilmStock("Fuji C200",              "fujifilm_c200.json",            "fujifilm_crystal_archive_typeii.json"),
+    FilmStock("Fuji Superia X-TRA 400", "fujifilm_xtra_400.json",       "fujifilm_crystal_archive_typeii.json"),
+    FilmStock("Fuji Pro 400H",          "fujifilm_pro_400h.json",        "fujifilm_crystal_archive_typeii.json"),
+    // ── Slide / Reversal ──────────────────────────────────────────────────
+    FilmStock("Fuji Velvia 100",         "fujifilm_velvia_100.json",     "fujifilm_crystal_archive_typeii.json"),
+    FilmStock("Fuji Provia 100F",        "fujifilm_provia_100f.json",    "fujifilm_crystal_archive_typeii.json"),
+    FilmStock("Kodak Ektachrome 100",    "kodak_ektachrome_100.json",    "kodak_endura_premier.json"),
+    FilmStock("Kodak Kodachrome 64",     "kodak_kodachrome_64.json",     "kodak_endura_premier.json"),
+    // ── Cine ──────────────────────────────────────────────────────────────
+    // Cinestill = Vision3 with remjet removed for C-41 processing; same spectral profile
+    FilmStock("Cinestill 50D",           "kodak_vision3_50d.json",       "kodak_2383.json"),
+    FilmStock("Cinestill 800T",          "kodak_vision3_500t.json",      "kodak_2383.json"),
+    FilmStock("Kodak Vision3 200T",      "kodak_vision3_200t.json",      "kodak_2383.json"),
+    FilmStock("Kodak Vision3 250D",      "kodak_vision3_250d.json",      "kodak_2383.json"),
+    FilmStock("Kodak Vision3 500T",      "kodak_vision3_500t.json",      "kodak_2383.json"),
 )
 
 class FilmProcessor(private val context: Context) {

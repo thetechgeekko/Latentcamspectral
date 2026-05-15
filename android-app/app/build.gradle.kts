@@ -83,6 +83,6 @@ dependencies {
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
   // Imaging & Metadata
-  implementation("androidx.exifinterface:exifinterface:1.3.7")
-  implementation("io.coil-kt:coil-compose:2.6.0")
+  implementation(libs.androidx.exifinterface)
+  implementation(libs.coil.compose)
 }

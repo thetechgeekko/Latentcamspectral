@@ -2,7 +2,6 @@
 //!
 //! Mirrors `spektrafilm/model/density_curves.py`.
 
-use crate::utils::interp::linear_interp_clamped;
 
 /// Interpolate log-exposure values into CMY density using the H&D curves.
 ///

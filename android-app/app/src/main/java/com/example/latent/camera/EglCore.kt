@@ -1,5 +1,6 @@
 package com.example.latent.camera
 
+import android.content.Context
 import android.opengl.EGL14
 import android.opengl.EGLConfig
 import android.opengl.EGLContext
@@ -12,6 +13,17 @@ import android.view.Surface
  * Low-level EGL management for the OpenGL viewfinder.
  */
 class EglCore(sharedContext: EGLContext? = null) {
+
+    companion object {
+        /**
+         * Returns true if the device reports GLES 3.0 support via ActivityManager.
+         * Call this before constructing EglCore to avoid a silent EGL_NO_CONTEXT failure.
+         */
+        fun isGles3Supported(context: Context): Boolean {
+            val am = context.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
+            return am.deviceConfigurationInfo.reqGlEsVersion >= 0x30000
+        }
+    }
     private var eglDisplay: EGLDisplay = EGL14.EGL_NO_DISPLAY
     private var eglContext: EGLContext = EGL14.EGL_NO_CONTEXT
     private var eglConfig: EGLConfig? = null
@@ -39,6 +51,9 @@ class EglCore(sharedContext: EGLContext? = null) {
             EGL14.EGL_NONE
         )
         eglContext = EGL14.eglCreateContext(eglDisplay, eglConfig, sharedContext ?: EGL14.EGL_NO_CONTEXT, contextAttribs, 0)
+        if (eglContext == EGL14.EGL_NO_CONTEXT) {
+            throw RuntimeException("Failed to create EGL context — GLES 3.0 not supported on this device")
+        }
     }
 
     fun createWindowSurface(surface: Any): EGLSurface {

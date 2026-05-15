@@ -7,6 +7,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.example.latent.ui.main.CameraScreen
+import com.example.latent.ui.gallery.GalleryScreen
 
 @Composable
 fun MainNavigation() {
@@ -18,7 +19,13 @@ fun MainNavigation() {
         entryProvider =
             entryProvider {
                 entry<Main> {
-                    CameraScreen(modifier = Modifier.safeDrawingPadding())
+                    CameraScreen(
+                        modifier = Modifier.safeDrawingPadding(),
+                        onGalleryOpen = { backStack.add(Gallery) },
+                    )
+                }
+                entry<Gallery> {
+                    GalleryScreen(onBack = { backStack.removeLastOrNull() })
                 }
             },
     )

@@ -1,26 +1,20 @@
 package com.example.latent.ui.main
 
-import androidx.activity.ComponentActivity
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import org.junit.Before
-import org.junit.Rule
+import androidx.test.core.app.ActivityScenario
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.latent.MainActivity
 import org.junit.Test
+import org.junit.runner.RunWith
 
-/** UI tests for [com.example.latent.ui.main.MainScreen]. */
-class MainScreenTest {
+/** Smoke test: verifies MainActivity launches without crashing. */
+@RunWith(AndroidJUnit4::class)
+class MainActivitySmokeTest {
 
-  @get:Rule val composeTestRule = createAndroidComposeRule<ComponentActivity>()
-
-  @Before
-  fun setup() {
-    composeTestRule.setContent { MainScreen(FAKE_DATA) }
-  }
-
-  @Test
-  fun firstItem_exists() {
-    FAKE_DATA.forEach { composeTestRule.onNodeWithText("Hello $it!").assertExists() }
-  }
+    @Test
+    fun mainActivity_launchesWithoutCrash() {
+        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+            // If we reach here without an exception the activity started successfully.
+            assert(scenario != null)
+        }
+    }
 }
-
-private val FAKE_DATA = listOf("Sample1", "Sample2", "Sample3")

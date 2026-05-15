@@ -49,7 +49,7 @@ private val filmStockNames = FILM_STOCKS.map { it.displayName }
 
 @OptIn(ExperimentalMaterial3Api::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
-fun CameraScreen(modifier: Modifier = Modifier) {
+fun CameraScreen(modifier: Modifier = Modifier, onGalleryOpen: () -> Unit = {}) {
     val context = LocalContext.current
     var selectedFilmIndex by remember { mutableIntStateOf(0) }
     var exposureComp by remember { mutableFloatStateOf(0f) }
@@ -241,6 +241,7 @@ fun CameraScreen(modifier: Modifier = Modifier) {
                 }
             },
             isDeveloping = isDeveloping,
+            onGalleryOpen = onGalleryOpen,
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -432,6 +433,7 @@ private fun BottomControls(
     onLensSelected: (Int) -> Unit,
     onShutterPressed: () -> Unit,
     isDeveloping: Boolean,
+    onGalleryOpen: () -> Unit = {},
 ) {
     val haptic = LocalHapticFeedback.current
 
@@ -442,13 +444,21 @@ private fun BottomControls(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // Gallery thumbnail placeholder
+        // Gallery thumbnail — tapping opens the Gallery screen
         Box(
             modifier = Modifier
                 .size(48.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(CameraGray),
-        )
+                .background(CameraGray)
+                .clickable { onGalleryOpen() },
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = "⊞",
+                color = CameraLightGray,
+                fontSize = 20.sp,
+            )
+        }
 
         // ── The Shutter Button ──
         ShutterButton(

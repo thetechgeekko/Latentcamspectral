@@ -2,7 +2,6 @@
 //!
 //! Mirrors `spektrafilm/model/emulsion.py`.
 
-use crate::config::N_WL;
 use crate::model::{
     couplers::{apply_density_correction_dir_couplers, DirCouplersParams},
     density_curves::interpolate_exposure_to_density,
@@ -78,7 +77,7 @@ pub struct DevelopParams<'a> {
 /// Full emulsion development: H&D curves → DIR couplers → grain.
 pub fn develop(log_raw: &[f64], params: &DevelopParams, out_shape: (usize, usize)) -> Vec<f64> {
     let (h, w) = out_shape;
-    let n_px = h * w;
+    let _n_px = h * w;
 
     let dc = params.density_curves;
     let le = params.log_exposure;
