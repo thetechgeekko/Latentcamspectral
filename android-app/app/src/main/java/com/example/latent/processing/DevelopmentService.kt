@@ -65,9 +65,10 @@ class DevelopmentService : Service() {
                 // Wait up to 3 s for the next job; stop the service when queue drains.
                 val job = withTimeoutOrNull(3_000L) { DevelopmentQueue.jobs.receive() } ?: break
 
+                Log.i(TAG, "Developing job: ${job.width}x${job.height} film=${job.filmStockIndex}")
                 DevelopmentQueue.reportProgress(0f)
 
-                processor.processRawJob(job) { progress ->
+                val uri = processor.processRawJob(job) { progress ->
                     DevelopmentQueue.reportProgress(progress)
                     val remaining = DevelopmentQueue.status.value.queueSize
                     val pct = (progress * 100).toInt()
@@ -75,11 +76,16 @@ class DevelopmentService : Service() {
                 }
 
                 DevelopmentQueue.reportJobComplete()
-                Log.i(TAG, "Development job complete")
+                if (uri != null) {
+                    Log.i(TAG, "Development complete: $uri")
+                } else {
+                    Log.e(TAG, "Development returned null URI — save may have failed")
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "processLoop error", e)
         } finally {
+            Log.i(TAG, "processLoop exiting, stopping service")
             processor.close()
             DevelopmentQueue.reportIdle()
             stopSelf()

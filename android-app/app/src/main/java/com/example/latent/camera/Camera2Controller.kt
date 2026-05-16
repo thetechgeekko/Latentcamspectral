@@ -231,9 +231,11 @@ class Camera2Controller(private val context: Context) {
             )
             rawImageReader!!.setOnImageAvailableListener({ reader ->
                 val image = reader.acquireLatestImage() ?: return@setOnImageAvailableListener
-                // Wait up to 300 ms for the TotalCaptureResult to arrive; on some
-                // devices the image buffer is ready slightly before the metadata.
-                val res = pendingResultQueue.poll(300, TimeUnit.MILLISECONDS)
+                Log.i(TAG, "RAW image buffer arrived (${image.width}x${image.height}), waiting for capture result")
+                // Wait up to 500 ms for the TotalCaptureResult to arrive.
+                // Normally the result arrives before the image, but on some devices
+                // the image buffer is ready slightly first.
+                val res = pendingResultQueue.poll(500, TimeUnit.MILLISECONDS)
                 val lensSnapshot = currentLens
                 if (res != null && lensSnapshot != null) {
                     try {
@@ -260,7 +262,7 @@ class Camera2Controller(private val context: Context) {
                     }
                 } else {
                     image.close()
-                    Log.e(TAG, "Dropped RAW frame — capture result unavailable after 300 ms")
+                    Log.e(TAG, "Dropped RAW frame — capture result unavailable after 500 ms (lensSnapshot=$lensSnapshot)")
                     captureCallback?.onCaptureFailed("Capture result timed out")
                 }
             }, backgroundHandler)
@@ -393,6 +395,12 @@ class Camera2Controller(private val context: Context) {
             captureCallback?.onCaptureFailed("No active capture session")
             return
         }
+        val reader = rawImageReader ?: run {
+            // Selected lens does not support RAW — fail immediately so isCapturing
+            // is reset and the shutter is not permanently blocked.
+            captureCallback?.onCaptureFailed("This lens does not support RAW capture")
+            return
+        }
 
         captureCallback?.onCaptureStarted()
         // Discard any stale result from a previous capture before firing a new one
@@ -401,13 +409,15 @@ class Camera2Controller(private val context: Context) {
         try {
             val captureRequest = session.device.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
 
-            // Add RAW target
-            rawImageReader?.let { captureRequest.addTarget(it.surface) }
-
-            // Also keep the preview alive during capture
-            previewSurfaceRef?.let { captureRequest.addTarget(it) }
+            // RAW surface only — do NOT add the preview surface here.
+            // When physicalCameraId is locked on the RAW OutputConfiguration, mixing
+            // a non-physical-locked preview surface in the same request causes the RAW
+            // image to never arrive on Samsung devices. The repeating preview request
+            // keeps the viewfinder running independently.
+            captureRequest.addTarget(reader.surface)
 
             captureRequest.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
+            captureRequest.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
 
             session.capture(captureRequest.build(), object : CameraCaptureSession.CaptureCallback() {
                 override fun onCaptureCompleted(
@@ -417,7 +427,7 @@ class Camera2Controller(private val context: Context) {
                 ) {
                     captureResult = result
                     pendingResultQueue.offer(result)
-                    Log.i(TAG, "Capture completed")
+                    Log.i(TAG, "RAW capture completed, awaiting image buffer")
                 }
 
                 override fun onCaptureFailed(
@@ -425,6 +435,7 @@ class Camera2Controller(private val context: Context) {
                     request: CaptureRequest,
                     failure: CaptureFailure,
                 ) {
+                    Log.e(TAG, "RAW capture failed: reason ${failure.reason}")
                     captureCallback?.onCaptureFailed("Capture failed: reason ${failure.reason}")
                 }
             }, backgroundHandler)
@@ -432,6 +443,8 @@ class Camera2Controller(private val context: Context) {
             captureCallback?.onCaptureFailed("CameraAccessException: ${e.message}")
         } catch (e: IllegalStateException) {
             captureCallback?.onCaptureFailed("Camera closed during capture: ${e.message}")
+        } catch (e: IllegalArgumentException) {
+            captureCallback?.onCaptureFailed("Invalid capture request: ${e.message}")
         }
     }
 

@@ -99,7 +99,9 @@ class FilmProcessor(private val context: Context) {
 
         // ── Step 2: Rust Spectral Engine (30 % → 85 %) ──────────────────────
         onProgress(0.30f)
+        Log.i(TAG, "Calling Rust spectral engine (${job.width}x${job.height})")
         val processed = engine.process(linearRgb, job.width, job.height)
+        Log.i(TAG, "Spectral engine returned: ${processed.width}x${processed.height}")
 
         // ── Step 3: Floats to Bitmap (85 % → 95 %) ──────────────────────────
         onProgress(0.85f)
